@@ -1,0 +1,104 @@
+Facebook Page Management System
+Mini Project Overview Document
+1. Project Title
+Facebook Page Management System
+2. Project Description
+
+Facebook Page Management System ek web-based application che je multiple users ne potani Facebook Pages connect kari manage karva allow kare che.
+
+Users:
+
+Facebook login kari shake
+Facebook Pages connect kari shake
+Image/video/text posts publish kari shake
+Comments joi shake
+Multiple pages manage kari shake
+
+System official Facebook Graph API no use karse.
+
+3. Main Objective
+
+Aa project no main goal:
+
+Multiple Facebook users manage karva
+Single dashboard mathi posts publish karva
+Facebook Pages automate karva
+Social media management easy banavvu
+4. Main Features
+User Features
+User Registration
+Login System
+Facebook Login
+Connect Facebook Pages
+Create Text Post
+Upload Image
+Upload Video
+Manage Posts
+View Comments
+Dashboard Analytics
+Admin Features
+Manage Users
+View Total Posts
+Analytics Dashboard
+Reports
+System Settings
+5. Technology Stack
+Part	Technology
+Backend	Laravel
+Frontend	HTML
+CSS Framework	Bootstrap
+Scripting	JavaScript
+Database	MySQL
+API	Facebook Graph API
+6. Database Tables
+users
+
+Store user information.
+
+facebook_pages
+
+Store connected Facebook Pages.
+
+posts
+
+Store published posts.
+
+comments
+
+Store Facebook comments.
+
+media
+
+Store uploaded images/videos.
+
+7. System Modules
+Module	Work
+Authentication Module	Login/Register
+Facebook Integration Module	Facebook connect
+Posting Module	Create posts
+Media Module	Upload media
+Comment Module	View comments
+Dashboard Module	Analytics
+8. System Workflow
+User Register/Login
+Connect Facebook Account
+Allow Facebook Permissions
+Fetch Facebook Pages
+Create Post
+Publish Post
+Manage Comments
+9. Project Benefits
+Easy social media management
+Multiple users support
+Centralized dashboard
+Time saving
+Page management automation
+10. Future Enhancements
+Instagram Integration
+Scheduled Posts
+AI Caption Generator
+Auto Reply System
+Multi-language Support
+11. Conclusion
+
+Facebook Page Management System ek modern social media management platform che je users ne simple dashboard mathi Facebook Pages manage karva help kare che. System secure, scalable ane user-friendly hase using Laravel ane Facebook Graph API.
