@@ -300,10 +300,10 @@
                     <div style="font-weight: 800; font-size: 0.9375rem;">{{ Auth::user()->name }}</div>
                     <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">PRO MEMBER</div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                <form id="logout-form" method="POST" action="{{ route('logout') }}" style="margin: 0; display: inline;">
                     @csrf
-                    <button type="submit" class="theme-toggle" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: none;" title="Logout">
-                        <i data-lucide="log-out"></i>
+                    <button type="button" onclick="document.getElementById('logout-form').submit();" class="theme-toggle" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: none; cursor: pointer;" title="Logout">
+                        <i data-lucide="log-out" style="pointer-events: none;"></i>
                     </button>
                 </form>
             </div>

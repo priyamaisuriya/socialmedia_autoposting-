@@ -198,20 +198,4 @@
         });
     </script>
 @endsection
-        // Checkbox checked = hide (send value), unchecked = show (no value sent)
-        // Visual: blue = currently showing (unchecked), grey = hidden (checked)
-        function updateToggle(checkbox, trackId) {
-            const track = document.getElementById(trackId);
-            const dot = track.querySelector('span');
-            if (checkbox.checked) {
-                // Hiding - show grey
-                track.style.background = 'rgba(136, 146, 176, 0.3)';
-                dot.style.transform = 'translateX(24px)';
-            } else {
-                // Showing - show accent blue
-                track.style.background = 'var(--accent)';
-                dot.style.transform = 'translateX(0)';
-            }
-        }
-    </script>
-@endsection
+

@@ -190,6 +190,44 @@
             box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.5);
         }
 
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 32px 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span { margin: 0 20px; }
+
+        .facebook-btn {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 16px;
+            background: #1877f2;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 10px 15px -3px rgba(24, 119, 242, 0.3);
+        }
+
+        .facebook-btn:hover {
+            transform: translateY(-2px);
+            background: #0d65d9;
+        }
+
         .login-text {
             text-align: center;
             margin-top: 36px;
@@ -257,6 +295,12 @@
                     </div>
 
                     <button type="submit" class="register-btn">Create Account</button>
+
+                    <div class="divider"><span>OR</span></div>
+
+                    <a href="/auth/facebook" class="facebook-btn">
+                        <i data-lucide="facebook"></i> Register with Facebook
+                    </a>
 
                     <div class="login-text">
                         Already have an account? <a href="{{ route('login') }}" class="login-link">Sign In</a>
