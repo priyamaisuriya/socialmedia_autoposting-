@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Protect the sensitive .env file
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>

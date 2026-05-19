@@ -272,6 +272,9 @@
             <a href="{{ route('posts.index') }}" class="nav-link {{ request()->routeIs('posts.index') ? 'active' : '' }}">
                 <i data-lucide="file-text"></i> <span>My Posts</span>
             </a>
+            <a href="{{ route('ads.index') }}" class="nav-link {{ request()->routeIs('ads.*') ? 'active' : '' }}">
+                <i data-lucide="megaphone"></i> <span>Ads Manager</span>
+            </a>
             <!-- <a href="{{ route('comments.index') }}" class="nav-link {{ request()->routeIs('comments.*') ? 'active' : '' }}">
                 <i data-lucide="message-square"></i> <span>Comments</span>
             </a> -->

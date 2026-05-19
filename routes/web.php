@@ -65,6 +65,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/analytics', [App\Http\Controllers\AnalyticsController::class, 'index'])
         ->name('analytics.index');
 
+    // Meta Ads Manager Routes
+    Route::get('/ads', [App\Http\Controllers\AdCampaignController::class, 'index'])->name('ads.index');
+    Route::get('/ads/create', [App\Http\Controllers\AdCampaignController::class, 'create'])->name('ads.create');
+    Route::post('/ads', [App\Http\Controllers\AdCampaignController::class, 'store'])->name('ads.store');
+    Route::post('/ads/{campaign}/toggle', [App\Http\Controllers\AdCampaignController::class, 'toggleStatus'])->name('ads.toggle');
+    Route::delete('/ads/{campaign}', [App\Http\Controllers\AdCampaignController::class, 'destroy'])->name('ads.destroy');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

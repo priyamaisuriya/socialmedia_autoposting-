@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
+
+    public function adCampaigns()
+    {
+        return $this->hasMany(AdCampaign::class);
+    }
 }
