@@ -86,10 +86,14 @@ class FacebookController extends Controller
 
             if (isset($pagesData['data']) && count($pagesData['data']) > 0) {
                 foreach ($pagesData['data'] as $page) {
+                    // Fixed: Use BOTH user_id + page_id as unique key
+                    // This ensures each user has their own isolated page record
                     FacebookPage::updateOrCreate(
-                        ['page_id' => $page['id']],
                         [
                             'user_id' => $user->id,
+                            'page_id' => $page['id'],
+                        ],
+                        [
                             'name' => $page['name'],
                             'access_token' => $page['access_token'],
                         ]
