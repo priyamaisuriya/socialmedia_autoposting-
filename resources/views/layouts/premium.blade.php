@@ -15,6 +15,9 @@
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Custom Premium DataTables CSS -->
+    <link rel="stylesheet" href="{{ asset('css/premium-datatables.css') }}">
+
     <!-- Styles -->
     <style>
         :root {
@@ -252,7 +255,7 @@
     <div class="sidebar" id="sidebar">
         <div style="margin-bottom: 4rem; padding: 0 1rem; animation: float 6s ease-in-out infinite;">
             <div class="logo-text" style="font-size: 1.75rem; font-weight: 900; letter-spacing: -0.04em;">
-                FB<span style="color: var(--accent);">Manager</span>
+                Social<span style="color: var(--accent);">Poster</span>
             </div>
         </div>
 
@@ -261,25 +264,34 @@
                 <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
             </a>
             <a href="{{ route('facebook.index') }}" class="nav-link {{ request()->routeIs('facebook.index') ? 'active' : '' }}">
-                <i data-lucide="user-plus"></i> <span>Accounts</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; flex-shrink: 0;"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg> <span>Facebook Accounts</span>
+            </a>
+            <a href="{{ route('instagram.index') }}" class="nav-link {{ request()->routeIs('instagram.index') ? 'active' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px; flex-shrink: 0;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> <span>Instagram Accounts</span>
             </a>
             <a href="{{ route('pages.index') }}" class="nav-link {{ request()->routeIs('pages.index') ? 'active' : '' }}">
                 <i data-lucide="layers"></i> <span>My Pages</span>
             </a>
-            <!-- <a href="{{ route('posts.create') }}" class="nav-link {{ request()->routeIs('posts.create') ? 'active' : '' }}">
-                <i data-lucide="plus-circle"></i> <span>Create Post</span>
-            </a> -->
-            <a href="{{ route('posts.index') }}" class="nav-link {{ request()->routeIs('posts.index') ? 'active' : '' }}">
-                <i data-lucide="file-text"></i> <span>My Posts</span>
+            
+            <!-- My Posts Hub -->
+            <a href="{{ route('posts.index') }}" class="nav-link {{ request()->routeIs('posts.index', 'posts.show') ? 'active' : '' }}">
+                <i data-lucide="grid"></i>
+                <span>My Posts Hub</span>
+            </a>
+
+            <a href="{{ route('stories.index') }}" class="nav-link {{ request()->routeIs('stories.index') ? 'active' : '' }}">
+                <i data-lucide="history"></i> <span>My Stories</span>
+            </a>
+            <a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') ? 'active' : '' }}">
+                <i data-lucide="calendar"></i> <span>Content Planner</span>
+            </a>
+            
+            <!-- WhatsApp Module -->
+            <a href="{{ route('whatsapp.create') }}" class="nav-link {{ request()->routeIs('whatsapp.*') ? 'active' : '' }}">
+                <i data-lucide="message-circle"></i> <span>WhatsApp Connect</span>
             </a>
             <a href="{{ route('ads.index') }}" class="nav-link {{ request()->routeIs('ads.*') ? 'active' : '' }}">
                 <i data-lucide="megaphone"></i> <span>Ads Manager</span>
-            </a>
-            <!-- <a href="{{ route('comments.index') }}" class="nav-link {{ request()->routeIs('comments.*') ? 'active' : '' }}">
-                <i data-lucide="message-square"></i> <span>Comments</span>
-            </a> -->
-            <a href="{{ route('analytics.index') }}" class="nav-link {{ request()->routeIs('analytics.*') ? 'active' : '' }}">
-                <i data-lucide="calendar"></i> <span>Content Planner</span>
             </a>
         </nav>
     </div>
@@ -380,5 +392,7 @@
             }
         }
     </script>
+    @stack('modals')
+    @stack('scripts')
 </body>
 </html>

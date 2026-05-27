@@ -14,6 +14,13 @@ class FacebookPage extends Model
         'page_id',
         'name',
         'access_token',
+        'instagram_account_id',
+        'instagram_username',
+        'is_instagram_connected',
+    ];
+
+    protected $casts = [
+        'is_instagram_connected' => 'boolean',
     ];
 
     public function user()

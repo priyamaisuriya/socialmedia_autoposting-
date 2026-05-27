@@ -35,6 +35,7 @@ class AnalyticsController extends Controller
 
         // Group posts by day and compute calendar-specific statistics
         $postsByDay = [];
+        $totalTargets = 0;
         $successCount = 0;
         $pendingCount = 0;
         $failedCount = 0;
@@ -43,12 +44,26 @@ class AnalyticsController extends Controller
             $day = intval($post->created_at->format('j'));
             $postsByDay[$day][] = $post;
 
-            if ($post->status === 'success') {
-                $successCount++;
-            } elseif ($post->status === 'pending') {
-                $pendingCount++;
-            } else {
-                $failedCount++;
+            if ($post->post_to_facebook) {
+                $totalTargets++;
+                if ($post->status === 'success') {
+                    $successCount++;
+                } elseif ($post->status === 'pending') {
+                    $pendingCount++;
+                } else {
+                    $failedCount++;
+                }
+            }
+
+            if ($post->post_to_instagram) {
+                $totalTargets++;
+                if ($post->instagram_status === 'success') {
+                    $successCount++;
+                } elseif ($post->instagram_status === 'pending') {
+                    $pendingCount++;
+                } else {
+                    $failedCount++;
+                }
             }
         }
 
@@ -61,11 +76,11 @@ class AnalyticsController extends Controller
         $connectedPages = \App\Models\FacebookPage::where('user_id', $user->id)->get();
         
         $plannerStats = [
-            'total' => $posts->count(),
+            'total' => $totalTargets,
             'success' => $successCount,
             'pending' => $pendingCount,
             'failed' => $failedCount,
-            'success_rate' => $posts->count() > 0 ? round(($successCount / $posts->count()) * 100) : 0,
+            'success_rate' => $totalTargets > 0 ? round(($successCount / $totalTargets) * 100) : 0,
         ];
         
         return view('analytics.index', compact(

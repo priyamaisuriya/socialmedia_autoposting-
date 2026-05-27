@@ -4,253 +4,6 @@
     <!-- Simple-DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
 
-    <style>
-        /* Premium Custom Styling for DataTables (Zero Horizontal Scrollbar) */
-        .datatable-wrapper {
-            background: transparent;
-            width: 100%;
-        }
-        
-        .datatable-container {
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            background: var(--card-bg);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            padding: 1rem;
-            margin: 1.5rem 0;
-            overflow-x: hidden !important; /* Force block horizontal scrollbar */
-            width: 100%;
-        }
-        
-        .datatable-table {
-            width: 100% !important;
-            border-collapse: collapse;
-            table-layout: auto;
-        }
-
-        .datatable-table th {
-            background: var(--nav-active) !important;
-            color: var(--text-muted) !important;
-            font-weight: 800 !important;
-            font-size: 0.75rem !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.05em !important;
-            border-bottom: 2px solid var(--glass-border) !important;
-            padding: 1.25rem 1rem !important;
-        }
-
-        .datatable-table td {
-            padding: 1.25rem 1rem !important;
-            border-bottom: 1px solid var(--glass-border) !important;
-            color: var(--text-main);
-            font-size: 0.85rem;
-            vertical-align: middle;
-        }
-
-        .datatable-table tbody tr {
-            transition: background 0.2s ease;
-        }
-
-        .datatable-table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.02) !important;
-        }
-
-        /* Top Controls Styling */
-        .datatable-top {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-bottom: 1.5rem !important;
-            gap: 1rem !important;
-            flex-wrap: wrap !important;
-            padding: 0 0.5rem !important;
-            float: none !important;
-            width: 100% !important;
-        }
-
-        .datatable-dropdown {
-            color: var(--text-muted) !important;
-            font-size: 0.85rem !important;
-            font-weight: 600 !important;
-            float: none !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-        }
-
-        .datatable-selector {
-            background: var(--nav-active) !important;
-            border: 1px solid var(--glass-border) !important;
-            color: var(--text-main) !important;
-            padding: 6px 32px 6px 12px !important;
-            border-radius: 10px !important;
-            font-weight: 700 !important;
-            outline: none !important;
-            cursor: pointer !important;
-            transition: all 0.3s !important;
-            appearance: none !important;
-            -webkit-appearance: none !important;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: right 10px center !important;
-            background-size: 14px !important;
-        }
-
-        .datatable-selector:focus {
-            border-color: var(--accent) !important;
-        }
-
-        .datatable-search {
-            position: relative !important;
-            float: none !important;
-            margin-left: auto !important; /* Force search to align perfectly to the right */
-        }
-
-        .datatable-input {
-            background: var(--nav-active) !important;
-            border: 1px solid var(--glass-border) !important;
-            color: var(--text-main) !important;
-            padding: 8px 16px !important;
-            border-radius: 12px !important;
-            outline: none !important;
-            width: 240px !important;
-            font-weight: 600 !important;
-            transition: all 0.3s !important;
-        }
-
-        .datatable-input:focus {
-            border-color: var(--accent) !important;
-            box-shadow: 0 0 15px var(--accent-glow) !important;
-            background: var(--bg-main) !important;
-        }
-
-        /* Bottom Controls Styling */
-        .datatable-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.5rem;
-            gap: 1rem;
-            flex-wrap: wrap;
-            padding: 0 0.5rem;
-        }
-
-        .datatable-info {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .datatable-pagination ul {
-            display: flex;
-            gap: 6px;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .datatable-pagination a {
-            background: var(--nav-active) !important;
-            color: var(--text-main) !important;
-            border: 1px solid var(--glass-border) !important;
-            padding: 0.5rem 0.75rem !important;
-            border-radius: 10px !important;
-            font-weight: 700 !important;
-            transition: all 0.2s !important;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .datatable-pagination a:hover {
-            background: var(--accent) !important;
-            color: white !important;
-            border-color: var(--accent) !important;
-            transform: translateY(-1px);
-        }
-
-        .datatable-pagination .active a {
-            background: var(--accent) !important;
-            color: white !important;
-            border-color: var(--accent) !important;
-            box-shadow: 0 4px 10px var(--accent-glow) !important;
-        }
-
-        .datatable-pagination .disabled a {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        /* Action Buttons - 100% Responsive & Clickable */
-        .action-icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--nav-active);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            position: relative;
-            z-index: 10;
-        }
-
-        .action-icon-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .action-icon-btn.view:hover {
-            background: rgba(59, 130, 246, 0.15);
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
-        .action-icon-btn.edit:hover {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
-            border-color: #f59e0b;
-        }
-
-        .action-icon-btn.delete:hover {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            border-color: #ef4444;
-        }
-
-        /* Prevent SVG from hijacking click events */
-        .action-icon-btn svg,
-        .action-icon-btn i {
-            pointer-events: none !important;
-        }
-
-        /* Responsive Column Hiding to Prevent Horizontal Scrollbars entirely */
-        @media (max-width: 992px) {
-            .hide-tablet {
-                display: none !important;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hide-mobile {
-                display: none !important;
-            }
-            .datatable-input {
-                width: 100% !important;
-            }
-            .datatable-top {
-                flex-direction: column !important;
-                align-items: stretch !important;
-            }
-            .datatable-search {
-                margin-left: 0 !important;
-                width: 100% !important;
-            }
-        }
-    </style>
 
     <div style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div>
@@ -356,19 +109,39 @@
 
                             <!-- Status Badge -->
                             <td>
-                                @if($post->status === 'success')
-                                    <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(16, 185, 129, 0.2);">
-                                        <span style="width: 5px; height: 5px; border-radius: 50%; background: #10b981;"></span> Published
-                                    </span>
-                                @elseif($post->status === 'failed')
-                                    <span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.2);">
-                                        <span style="width: 5px; height: 5px; border-radius: 50%; background: #ef4444;"></span> Failed
-                                    </span>
-                                @else
-                                    <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(245, 158, 11, 0.2);">
-                                        <span style="width: 5px; height: 5px; border-radius: 50%; background: #f59e0b;"></span> Pending
-                                    </span>
-                                @endif
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    @if($post->post_to_facebook)
+                                        @if($post->status === 'success')
+                                            <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(16, 185, 129, 0.2); width: fit-content;">
+                                                FB: Published
+                                            </span>
+                                        @elseif($post->status === 'failed')
+                                            <span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.2); width: fit-content;">
+                                                FB: Failed
+                                            </span>
+                                        @else
+                                            <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(245, 158, 11, 0.2); width: fit-content;">
+                                                FB: Pending
+                                            </span>
+                                        @endif
+                                    @endif
+
+                                    @if($post->post_to_instagram)
+                                        @if($post->instagram_status === 'success')
+                                            <span style="background: rgba(186, 104, 200, 0.1); color: #ba68c8; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(186, 104, 200, 0.2); width: fit-content;">
+                                                IG: Published
+                                            </span>
+                                        @elseif($post->instagram_status === 'failed')
+                                            <span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.2); width: fit-content;" title="{{ $post->instagram_error }}">
+                                                IG: Failed
+                                            </span>
+                                        @else
+                                            <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(245, 158, 11, 0.2); width: fit-content;">
+                                                IG: Pending
+                                            </span>
+                                        @endif
+                                    @endif
+                                </div>
                             </td>
 
                             <!-- Date Published -->
@@ -391,13 +164,15 @@
                                         </a>
                                     @endif
 
-                                    <!-- Archive/Unarchive Form -->
-                                    <form action="{{ route('posts.archive', $post->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">
-                                        @csrf
-                                        <button type="submit" class="action-icon-btn edit" title="{{ $post->is_archived ? 'Unarchive Post' : 'Archive Post' }}">
-                                            <i data-lucide="{{ $post->is_archived ? 'folder-up' : 'folder-down' }}" style="width: 16px; height: 16px;"></i>
-                                        </button>
-                                    </form>
+                                    <!-- Archive/Unarchive Form (Facebook Only) -->
+                                    @if($post->facebook_post_id)
+                                        <form action="{{ route('posts.archive', $post->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">
+                                            @csrf
+                                            <button type="submit" class="action-icon-btn edit" title="{{ $post->is_fb_archived ? 'Unarchive Facebook Post' : 'Archive Facebook Post' }}">
+                                                <i data-lucide="{{ $post->is_fb_archived ? 'folder-up' : 'folder-down' }}" style="width: 16px; height: 16px;"></i>
+                                            </button>
+                                        </form>
+                                    @endif
 
                                     <!-- Delete Button Form -->
                                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post? This will delete it on Facebook as well!')" style="display: inline-block; margin: 0; padding: 0;">
@@ -436,7 +211,6 @@
                     perPage: 10,
                     labels: {
                         placeholder: "Search posts...",
-                        perPage: "{select} posts per page",
                         noRows: "No matching posts found",
                         info: "Showing {start} to {end} of {rows} posts",
                     }
@@ -458,5 +232,7 @@
                 setTimeout(restoreIconsAndStyles, 100);
             }
         });
+
     </script>
 @endsection
+

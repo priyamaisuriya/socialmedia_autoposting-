@@ -2,30 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class AdCampaign extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'user_id',
-        'facebook_page_id',
-        'campaign_id',
-        'name',
-        'objective',
-        'daily_budget',
-        'status',
-        'clicks',
-        'impressions',
-        'spend',
-        'ctr',
-        'target_location',
-        'target_age_min',
-        'target_age_max',
-        'ad_text',
-        'ad_image',
+        'user_id', 'ad_account_id', 'campaign_id', 'name', 
+        'objective', 'status', 'daily_budget',
+        'adset_id', 'creative_id', 'ad_id', 'page_id',
+        'age_min', 'age_max', 'location', 'primary_text', 'website_url'
     ];
 
     public function user()
@@ -33,8 +18,8 @@ class AdCampaign extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function facebookPage()
+    public function account()
     {
-        return $this->belongsTo(FacebookPage::class);
+        return $this->belongsTo(AdAccount::class, 'ad_account_id');
     }
 }

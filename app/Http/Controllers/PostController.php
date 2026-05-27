@@ -86,15 +86,52 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        // Increase execution time limit for long-running video uploads
+        set_time_limit(300);
+
         $request->validate([
             'facebook_page_id' => 'required|exists:facebook_pages,id',
-            'message' => 'required|string',
-            'media.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:51200',
+            'message' => 'nullable|string',
+            'media' => 'nullable|array',
+            'media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200',
+            'scheduled_at' => 'nullable|date|after_or_equal:now',
         ]);
 
         $page = FacebookPage::findOrFail($request->facebook_page_id);
 
-        // Process Message with Hashtags and Tags
+        $postToFacebook = $request->has('post_to_facebook');
+        $postToInstagram = $request->has('post_to_instagram');
+
+        // Validation 1: At least one platform must be selected
+        if (!$postToFacebook && !$postToInstagram) {
+            return redirect()->back()->withInput()->with('error', 'Please select at least one platform to publish your post.');
+        }
+
+        // Validation 2: If Instagram is selected, check connection and active status
+        // Removed validation to allow forcing posts even if DB says it's not linked
+
+
+        // Validation 3: Instagram requires media (photo or video)
+        if ($postToInstagram && !$request->hasFile('media')) {
+            return redirect()->back()->withInput()->with('error', 'Instagram requires a media attachment (image or video).');
+        }
+
+        // Validation 4: Reels require video
+        if ($request->post_type === 'reel') {
+            if (!$request->hasFile('media')) {
+                return redirect()->back()->withInput()->with('error', 'Reels require a video file.');
+            }
+            $isInvalidReel = false;
+            foreach ($request->file('media') as $file) {
+                if (!str_contains($file->getMimeType(), 'video')) {
+                    $isInvalidReel = true;
+                    break;
+                }
+            }
+            if ($isInvalidReel) {
+                return redirect()->back()->withInput()->with('error', 'Reels only support video files (MP4, MOV, etc).');
+            }
+        }        // Process Message with Hashtags and Tags
         $fullMessage = $request->message;
         if ($request->tags) {
             $tags = array_map(function($tag) {
@@ -112,20 +149,24 @@ class PostController extends Controller
             $fullMessage .= "\n\n" . implode(' ', array_filter($hashtags));
         }
 
+        $isScheduled = !empty($request->scheduled_at);
+
         // 1. Save Post Locally
         $post = Post::create([
             'user_id' => auth()->id(),
             'facebook_page_id' => $page->id,
             'message' => $fullMessage,
-            'status' => 'pending',
+            'status' => $postToFacebook ? ($isScheduled ? 'scheduled' : 'pending') : 'success',
+            'instagram_status' => $postToInstagram ? ($isScheduled ? 'scheduled' : 'pending') : 'success',
+            'post_to_facebook' => $postToFacebook,
+            'post_to_instagram' => $postToInstagram,
             'hide_likes' => $request->has('hide_likes'),
             'hide_comments' => $request->has('hide_comments'),
+            'scheduled_at' => $request->scheduled_at,
         ]);
 
         // 2. Handle Media
-        $facebookPostId = null;
         $mediaFiles = [];
-
         if ($request->hasFile('media')) {
             foreach ($request->file('media') as $file) {
                 $path = $file->store('posts', 'public');
@@ -137,39 +178,94 @@ class PostController extends Controller
                     'media_type' => $type,
                 ]);
 
-                $mediaFiles[] = ['path' => storage_path('app/public/' . $path), 'type' => $type];
+                $mediaFiles[] = ['path' => $path, 'type' => $type];
             }
         }
 
-        // 3. Publish to Facebook
-        try {
-            if (empty($mediaFiles)) {
-                $result = $this->facebookApi->publishPost($page, $fullMessage);
-            } else {
-                $firstMedia = $mediaFiles[0];
-                if ($firstMedia['type'] === 'image') {
-                    $result = $this->facebookApi->publishPhoto($page, $fullMessage, $firstMedia['path']);
-                } else {
-                    $result = $this->facebookApi->publishVideo($page, $fullMessage, $fullMessage, $firstMedia['path']);
+        // 3. Hand off to the Publisher Service (if not scheduled)
+        if (!$isScheduled) {
+            $publisherService = app(\App\Services\PostPublisherService::class);
+            $publisherService->publish($post);
+
+            // 4. Also add to story
+            if ($request->has('also_add_to_story') && !empty($mediaFiles)) {
+                $relativeMediaPath = $mediaFiles[0]['path'];
+                
+                $story = \App\Models\Story::create([
+                    'user_id' => auth()->id(),
+                    'facebook_page_id' => $page->id,
+                    'media_path' => $relativeMediaPath,
+                    'status' => $postToFacebook ? 'pending' : 'skipped',
+                    'instagram_status' => $postToInstagram ? 'pending' : 'skipped',
+                    'post_to_facebook' => $postToFacebook,
+                    'post_to_instagram' => $postToInstagram,
+                ]);
+
+                // Create a temporary Post model representation for the story to use the generic publisher
+                $storyPost = new \App\Models\Post([
+                    'facebook_page_id' => $page->id,
+                    'post_to_facebook' => $postToFacebook,
+                    'post_to_instagram' => $postToInstagram,
+                    'status' => 'pending',
+                    'instagram_status' => 'pending'
+                ]);
+                $storyPost->id = $story->id; // Pseudo-ID just for media loading, wait no, publisher service reads Media.
+                
+                // Since our publisher service reads Media based on Post ID, for stories we'll just fall back to directly
+                // publishing using the Facebook API inline here, to avoid complex refactoring of the Story model right now.
+                
+                $type = $mediaFiles[0]['type'];
+                $fbStoryType = $type === 'image' ? 'photo' : 'video';
+
+                if ($postToFacebook) {
+                    try {
+                        $result = $this->facebookApi->publishFacebookStory($page, $mediaFiles[0]['path'], $fbStoryType);
+                        if (!isset($result['error'])) {
+                            $story->update(['status' => 'success']);
+                        } else {
+                            $story->update(['status' => 'failed']);
+                        }
+                    } catch (\Exception $e) {
+                        $story->update(['status' => 'failed']);
+                    }
+                }
+
+                if ($postToInstagram) {
+                    try {
+                        $result = $this->facebookApi->publishToInstagram($page, '', $mediaFiles[0]['path'], $type, 'story');
+                        if (isset($result['id'])) {
+                            $story->update(['instagram_status' => 'success']);
+                        } else {
+                            $story->update(['instagram_status' => 'failed', 'error_message' => $result['error']['message'] ?? json_encode($result)]);
+                        }
+                    } catch (\Exception $e) {
+                        $story->update(['instagram_status' => 'failed', 'error_message' => $e->getMessage()]);
+                    }
                 }
             }
-
-            if (isset($result['id']) || isset($result['post_id'])) {
-                $fbId = $result['id'] ?? $result['post_id'];
-                $post->update([
-                    'facebook_post_id' => $fbId,
-                    'status' => 'success',
-                ]);
-                return redirect()->route('dashboard')->with('success', 'Post published successfully!');
-            } else {
-                $post->update(['status' => 'failed']);
-                return redirect()->back()->with('error', 'Facebook API Error: ' . json_encode($result));
-            }
-
-        } catch (\Exception $e) {
-            $post->update(['status' => 'failed']);
-            return redirect()->back()->with('error', 'Exception: ' . $e->getMessage());
         }
+
+        // 6. Consolidated Feedback Messages
+        $feedbacks = [];
+        if ($isScheduled) {
+            $feedbacks[] = 'Scheduled for ' . \Carbon\Carbon::parse($request->scheduled_at)->format('Y-m-d H:i');
+        } else {
+            if ($postToFacebook) {
+                $feedbacks[] = $facebookSuccess ? 'Facebook: Success' : "Facebook Failed ({$fbErrorMsg})";
+            }
+            if ($postToInstagram) {
+                $feedbacks[] = $instagramSuccess ? 'Instagram: Success' : "Instagram Failed ({$igErrorMsg})";
+            }
+        }
+
+        $feedbackMsg = implode(' | ', $feedbacks);
+
+        if (!$isScheduled && (($postToFacebook && !$facebookSuccess) || ($postToInstagram && !$instagramSuccess))) {
+            return redirect()->route('dashboard')->with('error', 'Post publishing completed with errors: ' . $feedbackMsg);
+        }
+
+        $successMsg = $isScheduled ? 'Post scheduled successfully! ' : 'Post published successfully! ';
+        return redirect()->route('dashboard')->with('success', $successMsg . $feedbackMsg);
     }
 
     public function show(Post $post)
@@ -229,24 +325,34 @@ class PostController extends Controller
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully!');
     }
 
-    public function toggleArchive(Post $post)
+    public function toggleArchive(Request $request, Post $post)
     {
-        $post->is_archived = !$post->is_archived;
-        $post->save();
+        if (!$post->facebook_post_id) {
+            return redirect()->back()->with('error', 'Archiving is only supported for Facebook posts. Instagram does not support programmatic archiving.');
+        }
 
-        if ($post->status === 'success' && $post->facebook_post_id && $post->facebookPage) {
+        $post->is_fb_archived = !$post->is_fb_archived;
+        $post->is_archived = $post->is_fb_archived;
+        
+        $message = '';
+        if ($post->facebookPage) {
             $result = $this->facebookApi->togglePostVisibility(
                 $post->facebook_post_id,
-                $post->is_archived,
+                $post->is_fb_archived,
                 $post->facebookPage->access_token
             );
 
             if (isset($result['error'])) {
                 \Illuminate\Support\Facades\Log::warning('Facebook post visibility toggle failed: ' . $result['error']['message']);
+                return redirect()->back()->with('error', 'Facebook visibility API error: ' . $result['error']['message']);
             }
+            
+            $action = $post->is_fb_archived ? 'archived (hidden from timeline)' : 'unarchived (visible on timeline)';
+            $message = "Post successfully {$action} on Facebook!";
         }
 
-        $action = $post->is_archived ? 'archived' : 'unarchived';
-        return redirect()->back()->with('success', "Post $action successfully and synced with Facebook!");
+        $post->save();
+
+        return redirect()->back()->with('success', $message);
     }
 }

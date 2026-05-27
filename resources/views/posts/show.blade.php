@@ -157,12 +157,14 @@
                 <i data-lucide="arrow-left" style="width: 18px; height: 18px; color: var(--accent);"></i> Back to My Posts Hub
             </a>
 
-            <form action="{{ route('posts.archive', $post->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">
-                @csrf
-                <button type="submit" class="btn-primary" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 0.75rem 1.75rem; border-radius: 16px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(245, 158, 11, 0.2)';" onmouseout="this.style.background='rgba(245, 158, 11, 0.1)';">
-                    <i data-lucide="{{ $post->is_archived ? 'folder-up' : 'folder-down' }}" style="width: 18px; height: 18px;"></i> {{ $post->is_archived ? 'Unarchive' : 'Archive Post' }}
-                </button>
-            </form>
+            @if($post->facebook_post_id)
+                <form action="{{ route('posts.archive', $post->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">
+                    @csrf
+                    <button type="submit" class="btn-primary" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 0.75rem 1.75rem; border-radius: 16px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(245, 158, 11, 0.2)';" onmouseout="this.style.background='rgba(245, 158, 11, 0.1)';">
+                        <i data-lucide="{{ $post->is_fb_archived ? 'folder-up' : 'folder-down' }}" style="width: 18px; height: 18px;"></i> {{ $post->is_fb_archived ? 'Unarchive Facebook' : 'Archive Facebook' }}
+                    </button>
+                </form>
+            @endif
 
             <form action="{{ route('posts.destroy', $post->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this post? This will delete it on Facebook as well!')" style="display: inline-block; margin: 0; padding: 0;">
                 @csrf
@@ -185,17 +187,19 @@
                 
                 <!-- Section 1: Clean Description -->
                 <div>
-                    <h3 style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px;">
-                        <i data-lucide="file-text" style="width: 14px; height: 14px; color: var(--accent);"></i> Post Description
-                    </h3>
-                    <div style="font-size: 1.125rem; line-height: 1.6; color: var(--text-main); font-weight: 500; word-break: break-word; white-space: pre-wrap;">
-                        @php
-                            // Get clean description by stripping hashtags and mentions
-                            $cleanText = preg_replace('/#\w+/u', '', $post->message);
-                            $cleanText = preg_replace('/@\w+/u', '', $cleanText);
-                            $cleanText = trim($cleanText);
-                        @endphp
-                        {{ $cleanText ?: $post->message }}
+                    <div>
+                        <h3 style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px;">
+                            <i data-lucide="file-text" style="width: 14px; height: 14px; color: var(--accent);"></i> Post Description
+                        </h3>
+                        <div style="font-size: 1.125rem; line-height: 1.6; color: var(--text-main); font-weight: 500; word-break: break-word; white-space: pre-wrap;">
+                            @php
+                                // Get clean description by stripping hashtags and mentions
+                                $cleanText = preg_replace('/#\w+/u', '', $post->message);
+                                $cleanText = preg_replace('/@\[[^\]]+\]|@\w+/u', '', $cleanText);
+                                $cleanText = trim($cleanText);
+                            @endphp
+                            {{ $cleanText ?: $post->message }}
+                        </div>
                     </div>
                 </div>
 
@@ -212,8 +216,17 @@
                         </h4>
                         
                         @php
-                            preg_match_all('/@(\w+)/u', $post->message, $mentionMatches);
-                            $mentions = $mentionMatches[0] ?? [];
+                            $mentions = [];
+                            
+                            // Match bracketed mentions @[username] or standard @username
+                            preg_match_all('/@\[([^\]]+)\]|@(\w+)/u', $post->message, $mentionMatches);
+                            if (!empty($mentionMatches[0])) {
+                                foreach ($mentionMatches[0] as $m) {
+                                    $mentions[] = str_replace(['[', ']'], '', $m);
+                                }
+                            }
+                            
+                            $mentions = array_unique($mentions);
                         @endphp
                         
                         @if(!empty($mentions))
@@ -237,7 +250,7 @@
 
                         @php
                             preg_match_all('/#(\w+)/u', $post->message, $hashtagMatches);
-                            $hashtags = $hashtagMatches[0] ?? [];
+                            $hashtags = array_unique($hashtagMatches[0] ?? []);
                         @endphp
 
                         @if(!empty($hashtags))
@@ -544,5 +557,6 @@
                 alert('Meta Post ID copied to clipboard!');
             });
         }
+
     </script>
 @endsection

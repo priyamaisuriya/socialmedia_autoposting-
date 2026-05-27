@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\StoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::get('/auth/facebook', [FacebookController::class, 'redirect']);
+Route::get('/auth/instagram', [FacebookController::class, 'redirectInstagram']);
 Route::get('/auth/facebook/callback', [FacebookController::class, 'callback']);
 
 Route::middleware('auth')->group(function () {
@@ -26,6 +28,11 @@ Route::middleware('auth')->group(function () {
         ->name('facebook.index');
     Route::delete('/facebook/accounts/{account}', [FacebookController::class, 'destroy'])
         ->name('facebook.destroy');
+
+    Route::get('/instagram/accounts', [\App\Http\Controllers\InstagramController::class, 'index'])
+        ->name('instagram.index');
+    Route::post('/instagram/accounts/{id}/toggle', [\App\Http\Controllers\InstagramController::class, 'toggleConnection'])
+        ->name('instagram.toggle');
     Route::get('/pages', function () {
         return view('pages.index', [
             'pages' => auth()->user()->facebookPages
@@ -65,16 +72,31 @@ Route::middleware('auth')->group(function () {
     Route::get('/analytics', [App\Http\Controllers\AnalyticsController::class, 'index'])
         ->name('analytics.index');
 
-    // Meta Ads Manager Routes
-    Route::get('/ads', [App\Http\Controllers\AdCampaignController::class, 'index'])->name('ads.index');
-    Route::get('/ads/create', [App\Http\Controllers\AdCampaignController::class, 'create'])->name('ads.create');
-    Route::post('/ads', [App\Http\Controllers\AdCampaignController::class, 'store'])->name('ads.store');
-    Route::post('/ads/{campaign}/toggle', [App\Http\Controllers\AdCampaignController::class, 'toggleStatus'])->name('ads.toggle');
-    Route::delete('/ads/{campaign}', [App\Http\Controllers\AdCampaignController::class, 'destroy'])->name('ads.destroy');
+    Route::post('/ai-assistant/generate', [\App\Http\Controllers\AiAssistantController::class, 'generate'])->name('ai.generate');
+    Route::post('/ai-assistant/reply', [\App\Http\Controllers\AiAssistantController::class, 'generateReply'])->name('ai.reply');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/facebook/toggle-archive/{post}', [PostController::class, 'toggleArchive'])->name('facebook.toggle-archive');
+
+    // Ads Manager Routes
+    Route::get('/ads', [App\Http\Controllers\AdManagerController::class, 'index'])->name('ads.index');
+    Route::post('/ads/fetch', [App\Http\Controllers\AdManagerController::class, 'fetchAccounts'])->name('ads.fetch');
+    Route::get('/ads/create', [App\Http\Controllers\AdManagerController::class, 'create'])->name('ads.create');
+    Route::post('/ads/store', [App\Http\Controllers\AdManagerController::class, 'store'])->name('ads.store');
+
+    // Social Media Management Routes
+    Route::resource('posts', PostController::class);
+    Route::resource('stories', StoryController::class);
+    
+    // Calendar Routes
+    Route::get('/calendar', [App\Http\Controllers\CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/events', [App\Http\Controllers\CalendarController::class, 'events'])->name('calendar.events');
+
+    // WhatsApp Routes
+    Route::get('/whatsapp/create', [App\Http\Controllers\WhatsAppController::class, 'create'])->name('whatsapp.create');
+    Route::post('/whatsapp/send', [App\Http\Controllers\WhatsAppController::class, 'send'])->name('whatsapp.send');
 });
 
 require __DIR__.'/auth.php';

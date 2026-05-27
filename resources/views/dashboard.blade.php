@@ -221,19 +221,79 @@
         </div>
     @endif
 
+    <!-- Delivery Analytics Banner (Creative Section) -->
+    <div style="margin-bottom: 3rem; background: linear-gradient(145deg, #1e1b4b, #312e81, #1e1b4b); border-radius: 32px; padding: 2.5rem; border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden;">
+        <!-- Background decorations -->
+        <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -100px; right: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; position: relative; z-index: 10;">
+            <div>
+                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px;">
+                    <i data-lucide="rocket" style="color: #a855f7;"></i> Publishing Pipeline
+                </h2>
+                <p style="margin: 0.25rem 0 0 0; color: #94a3b8; font-size: 0.9rem;">Real-time status of your content delivery</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); color: #fff; font-weight: 700; font-size: 0.85rem;">
+                Total Pipeline: <span style="color: #a855f7;">{{ number_format($stats['total_posts']) }}</span> Posts
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; position: relative; z-index: 10;">
+            
+            <!-- Success Posts (Creative) -->
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);">
+                        <i data-lucide="check-circle" style="color: #fff; width: 24px; height: 24px;"></i>
+                    </div>
+                    <div>
+                        <div style="color: #10b981; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Published</div>
+                        <div style="color: #fff; font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['success_posts']) }}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
+                    <div style="width: {{ $stats['total_posts'] > 0 ? ($stats['success_posts'] / $stats['total_posts']) * 100 : 0 }}%; height: 100%; background: #10b981; border-radius: 3px;"></div>
+                </div>
+            </div>
+
+            <!-- Pending Posts (Creative) -->
+            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);">
+                        <i data-lucide="clock" style="color: #fff; width: 24px; height: 24px;"></i>
+                    </div>
+                    <div>
+                        <div style="color: #f59e0b; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Pending</div>
+                        <div style="color: #fff; font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['pending_posts']) }}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
+                    <div style="width: {{ $stats['total_posts'] > 0 ? ($stats['pending_posts'] / $stats['total_posts']) * 100 : 0 }}%; height: 100%; background: #f59e0b; border-radius: 3px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);"></div>
+                </div>
+            </div>
+
+            <!-- Failed Posts (Creative) -->
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #ef4444, #b91c1c); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);">
+                        <i data-lucide="x-circle" style="color: #fff; width: 24px; height: 24px;"></i>
+                    </div>
+                    <div>
+                        <div style="color: #ef4444; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Failed</div>
+                        <div style="color: #fff; font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['failed_posts']) }}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
+                    <div style="width: {{ $stats['total_posts'] > 0 ? ($stats['failed_posts'] / $stats['total_posts']) * 100 : 0 }}%; height: 100%; background: #ef4444; border-radius: 3px;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Quick Stats Grid -->
     <div class="stats-grid">
-        <!-- Stats Card: Total Posts -->
-        <div class="stat-card">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.25rem;">
-                <div class="stat-icon-wrapper" style="background: rgba(99, 102, 241, 0.1); color: var(--accent);">
-                    <i data-lucide="send" style="width: 22px; height: 22px;"></i>
-                </div>
-                <span class="stat-badge" style="background: rgba(99, 102, 241, 0.08); color: var(--accent);">Active</span>
-            </div>
-            <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Total Posts</div>
-            <div style="font-size: 2rem; font-weight: 800;">{{ number_format($stats['total_posts']) }}</div>
-        </div>
 
         <!-- Stats Card: Total Likes -->
         <div class="stat-card" style="position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);" onmouseover="this.style.borderColor='#f43f5e'; this.style.boxShadow='0 12px 40px rgba(244, 63, 94, 0.2)';" onmouseout="this.style.borderColor='var(--glass-border)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.12)';">
@@ -272,6 +332,26 @@
             </div>
             <div style="color: var(--text-muted); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">Total Media</div>
             <div style="font-size: 2rem; font-weight: 800;">{{ number_format($stats['total_images'] + $stats['total_videos']) }}</div>
+        </div>
+
+    </div>
+
+    <!-- Analytics Charts Section -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+        <!-- Area Chart: Posts Over Time -->
+        <div class="premium-card" style="background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);">
+            <h3 style="font-weight: 800; font-size: 1.15rem; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="bar-chart-2" style="color: var(--accent); width: 18px; height: 18px;"></i> Engagement & Posting Activity
+            </h3>
+            <div id="activityChart" style="min-height: 300px;"></div>
+        </div>
+
+        <!-- Donut Chart: Post Status -->
+        <div class="premium-card" style="background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12); display: flex; flex-direction: column;">
+            <h3 style="font-weight: 800; font-size: 1.15rem; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="pie-chart" style="color: var(--accent); width: 18px; height: 18px;"></i> Delivery Status
+            </h3>
+            <div id="statusChart" style="flex: 1; display: flex; align-items: center; justify-content: center;"></div>
         </div>
     </div>
 
@@ -428,10 +508,122 @@
         </div>
     </div>
 
+    <!-- Include ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <!-- Trigger Lucide rendering initially -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons();
+
+            // Setup ApexCharts Theme & Data
+            const textColor = getComputedStyle(document.body).getPropertyValue('--text-main').trim();
+            const textMuted = getComputedStyle(document.body).getPropertyValue('--text-muted').trim();
+            
+            // Data from Controller
+            const chartDates = @json($chartDates);
+            const chartPostsData = @json($chartPostsData);
+            const chartStatusData = @json($chartStatusData);
+
+            // 1. Activity Area Chart
+            var activityOptions = {
+                series: [{
+                    name: 'Posts Published',
+                    data: chartPostsData
+                }],
+                chart: {
+                    type: 'area',
+                    height: 300,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit',
+                    background: 'transparent'
+                },
+                colors: ['#8b5cf6'], // Purple accent
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.45,
+                        opacityTo: 0.05,
+                        stops: [20, 100]
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: {
+                    curve: 'smooth',
+                    width: 3
+                },
+                xaxis: {
+                    categories: chartDates,
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    labels: {
+                        style: { colors: textMuted, fontWeight: 600 }
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: textMuted, fontWeight: 600 },
+                        formatter: function(val) { return Math.round(val); }
+                    }
+                },
+                grid: {
+                    borderColor: 'rgba(255,255,255,0.05)',
+                    strokeDashArray: 4,
+                    yaxis: { lines: { show: true } }
+                },
+                theme: { mode: 'dark' },
+                tooltip: {
+                    theme: 'dark'
+                }
+            };
+            var activityChart = new ApexCharts(document.querySelector("#activityChart"), activityOptions);
+            activityChart.render();
+
+            // 2. Status Donut Chart
+            var statusOptions = {
+                series: chartStatusData, // [Success, Failed, Pending]
+                chart: {
+                    type: 'donut',
+                    height: 300,
+                    fontFamily: 'inherit',
+                    background: 'transparent'
+                },
+                labels: ['Success', 'Failed', 'Pending'],
+                colors: ['#10b981', '#ef4444', '#f59e0b'],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '75%',
+                            labels: {
+                                show: true,
+                                name: { show: true, color: textMuted, fontSize: '14px', fontWeight: 600 },
+                                value: { show: true, color: textColor, fontSize: '24px', fontWeight: 800 },
+                                total: {
+                                    show: true,
+                                    showAlways: true,
+                                    label: 'Total',
+                                    color: textMuted,
+                                    formatter: function (w) {
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                dataLabels: { enabled: false },
+                stroke: { show: false },
+                legend: {
+                    position: 'bottom',
+                    labels: { colors: textColor, useSeriesColors: false },
+                    markers: { width: 12, height: 12, radius: 12 }
+                },
+                theme: { mode: 'dark' },
+                tooltip: { theme: 'dark' }
+            };
+            var statusChart = new ApexCharts(document.querySelector("#statusChart"), statusOptions);
+            statusChart.render();
         });
     </script>
 @endsection

@@ -11,6 +11,7 @@ class Comment extends Model
 
     protected $fillable = [
         'post_id',
+        'platform',
         'parent_id',
         'facebook_comment_id',
         'user_name',

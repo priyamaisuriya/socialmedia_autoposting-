@@ -1,33 +1,37 @@
 @extends('layouts.premium')
 
 @section('content')
-    <!-- Content Planner Calendar Header -->
-    <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
-        <div>
-            <h1 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(135deg, var(--text-main), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                Content Planner & Calendar
+    <!-- Creative Planner Hero Banner -->
+    <div style="margin-bottom: 3rem; background: linear-gradient(145deg, #0f172a, #1e1b4b, #312e81); border-radius: 32px; padding: 2.5rem 3rem; border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+        <!-- Background aesthetic glowing orbs -->
+        <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%); border-radius: 50%; animation: pulse 4s infinite alternate;"></div>
+        <div style="position: absolute; bottom: -100px; right: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(236,72,153,0.15) 0%, transparent 70%); border-radius: 50%; animation: pulse 5s infinite alternate-reverse;"></div>
+        
+        <div style="position: relative; z-index: 10;">
+            <h1 style="font-size: 2.8rem; font-weight: 900; letter-spacing: -0.03em; color: #fff; margin: 0; display: flex; align-items: center; gap: 1rem;">
+                <i data-lucide="calendar-days" style="color: #a855f7; width: 42px; height: 42px;"></i> Content Universe
             </h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">
-                Visual planner hub. Pre-schedule, review, and track campaigns across connected Facebook Pages.
+            <p style="color: #cbd5e1; font-size: 1.05rem; margin-top: 0.5rem; font-weight: 500; max-width: 400px; line-height: 1.5;">
+                Orchestrate, schedule, and dominate your social media campaigns from one powerful command center.
             </p>
         </div>
 
         <!-- Right Header controls: Jump Selector + Navigation Arrows -->
-        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <div style="position: relative; z-index: 10; display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
             
             <!-- Month & Year Jump Selector Form -->
-            <form action="{{ route('analytics.index') }}" method="GET" style="display: flex; gap: 8px; align-items: center; background: var(--nav-active); border: 1px solid var(--glass-border); padding: 4px; border-radius: 14px;">
+            <form action="{{ route('analytics.index') }}" method="GET" style="display: flex; gap: 8px; align-items: center;">
                 <input type="hidden" name="facebook_page_id" value="{{ $pageIdFilter }}">
-                <select name="month" class="header-jump-selector" onchange="this.form.submit()">
+                <select name="month" style="background: rgba(0,0,0,0.2) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; padding: 8px 12px; border-radius: 12px; font-weight: 700; outline: none; cursor: pointer; appearance: none;" onchange="this.form.submit()">
                     @for($m = 1; $m <= 12; $m++)
-                        <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
+                        <option value="{{ $m }}" style="color: black;" {{ $month == $m ? 'selected' : '' }}>
                             {{ date('F', mktime(0, 0, 0, $m, 1)) }}
                         </option>
                     @endfor
                 </select>
-                <select name="year" class="header-jump-selector" onchange="this.form.submit()">
+                <select name="year" style="background: rgba(0,0,0,0.2) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; padding: 8px 12px; border-radius: 12px; font-weight: 700; outline: none; cursor: pointer; appearance: none;" onchange="this.form.submit()">
                     @for($y = 2025; $y <= 2030; $y++)
-                        <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>
+                        <option value="{{ $y }}" style="color: black;" {{ $year == $y ? 'selected' : '' }}>
                             {{ $y }}
                         </option>
                     @endfor
@@ -35,18 +39,18 @@
             </form>
 
             <!-- Navigation Arrows -->
-            <div style="display: inline-flex; align-items: center; background: var(--nav-active); border: 1px solid var(--glass-border); padding: 4px; border-radius: 14px; gap: 4px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);">
+            <div style="display: inline-flex; align-items: center; gap: 4px;">
                 <a href="{{ route('analytics.index', ['month' => $prevMonth->month, 'year' => $prevMonth->year, 'facebook_page_id' => $pageIdFilter]) }}" 
-                   class="btn-nav-cal" title="Previous Month">
+                   style="background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4); color: white; width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='rgba(99,102,241,0.2)'" title="Previous Month">
                     <i data-lucide="chevron-left" style="width: 18px; height: 18px;"></i>
                 </a>
                 
-                <span style="font-weight: 800; font-size: 0.9rem; color: var(--text-main); padding: 0 1rem; min-width: 120px; text-align: center; letter-spacing: -0.01em;">
+                <span style="font-weight: 900; font-size: 1.1rem; color: #fff; padding: 0 1rem; min-width: 140px; text-align: center; letter-spacing: -0.01em;">
                     {{ $monthName }}
                 </span>
                 
                 <a href="{{ route('analytics.index', ['month' => $nextMonth->month, 'year' => $nextMonth->year, 'facebook_page_id' => $pageIdFilter]) }}" 
-                   class="btn-nav-cal" title="Next Month">
+                   style="background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4); color: white; width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='rgba(99,102,241,0.2)'" title="Next Month">
                     <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
                 </a>
             </div>
@@ -188,43 +192,101 @@
                             <div class="planner-posts-container">
                                 @foreach($dayPosts as $post)
                                     @php
-                                        $statusClass = 'success';
-                                        if($post->status === 'failed') $statusClass = 'failed';
-                                        elseif($post->status === 'pending') $statusClass = 'pending';
-                                        
                                         $firstMedia = $post->media->first();
-                                        $postJsonData = [
-                                            'id' => $post->id,
-                                            'message' => $post->message,
-                                            'status' => ucfirst($post->status),
-                                            'page_name' => $post->facebookPage->name ?? 'None connected',
-                                            'media_url' => $firstMedia ? asset('storage/' . $firstMedia->file_path) : null,
-                                            'media_type' => $firstMedia ? $firstMedia->media_type : null,
-                                            'likes' => $post->dynamic_likes ?? 0,
-                                            'comments' => $post->dynamic_comments ?? 0,
-                                            'date' => $post->created_at->format('M d, Y \a\t h:i A')
-                                        ];
+                                        $mediaUrl = $firstMedia ? asset('storage/' . $firstMedia->file_path) : null;
+                                        if ($firstMedia && (filter_var($firstMedia->file_path, FILTER_VALIDATE_URL) !== false)) {
+                                            $mediaUrl = $firstMedia->file_path;
+                                        }
                                     @endphp
-                                    
-                                    <!-- Clickable Post Item bubble opens Detail Modal -->
-                                    <button type="button" class="planner-post-bubble {{ $statusClass }}" 
-                                            onclick="openPostPreview({{ json_encode($postJsonData) }})"
-                                            title="{{ $post->message }}">
-                                        
-                                        @if($firstMedia && $firstMedia->media_type === 'image')
-                                            <img src="{{ asset('storage/' . $firstMedia->file_path) }}" style="width: 16px; height: 16px; border-radius: 4px; object-fit: cover; flex-shrink: 0;" />
-                                        @elseif($firstMedia && $firstMedia->media_type === 'video')
-                                            <div style="width: 16px; height: 16px; border-radius: 4px; background: black; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                <i data-lucide="play" style="width: 8px; height: 8px; color: white; fill: white;"></i>
-                                            </div>
-                                        @else
-                                            <i data-lucide="file-text" style="width: 10px; height: 10px; flex-shrink: 0;"></i>
-                                        @endif
-                                        
-                                        <span style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 50px;">
-                                            {{ Str::limit($post->message, 12) }}
-                                        </span>
-                                    </button>
+
+                                    {{-- 1. Facebook Item --}}
+                                    @if($post->post_to_facebook)
+                                        @php
+                                            $fbStatus = $post->status ?: 'pending';
+                                            $statusClass = 'success';
+                                            if($fbStatus === 'failed') $statusClass = 'failed';
+                                            elseif($fbStatus === 'pending') $statusClass = 'pending';
+
+                                            $fbJsonData = [
+                                                'id' => $post->id,
+                                                'platform' => 'Facebook',
+                                                'message' => $post->message,
+                                                'status' => ucfirst($fbStatus),
+                                                'page_name' => $post->facebookPage->name ?? 'None connected',
+                                                'media_url' => $mediaUrl,
+                                                'media_type' => $firstMedia ? $firstMedia->media_type : null,
+                                                'likes' => $post->dynamic_likes ?? 0,
+                                                'comments' => $post->dynamic_comments ?? 0,
+                                                'date' => $post->created_at->format('M d, Y \a\t h:i A'),
+                                                'error' => null
+                                            ];
+                                        @endphp
+                                        <button type="button" class="planner-post-bubble fb-bubble {{ $statusClass }}" 
+                                                onclick="openPostPreview({{ json_encode($fbJsonData) }})"
+                                                title="Facebook: {{ $post->message }}">
+                                            
+                                            <span class="platform-badge fb">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                                            </span>
+
+                                            @if($firstMedia && $firstMedia->media_type === 'image')
+                                                <img src="{{ $mediaUrl }}" style="width: 14px; height: 14px; border-radius: 3px; object-fit: cover; flex-shrink: 0;" />
+                                            @elseif($firstMedia && $firstMedia->media_type === 'video')
+                                                <div style="width: 14px; height: 14px; border-radius: 3px; background: black; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                    <i data-lucide="play" style="width: 6px; height: 6px; color: white; fill: white;"></i>
+                                                </div>
+                                            @endif
+                                            
+                                            <span class="bubble-text">
+                                                {{ Str::limit($post->message, 10) }}
+                                            </span>
+                                        </button>
+                                    @endif
+
+                                    {{-- 2. Instagram Item --}}
+                                    @if($post->post_to_instagram)
+                                        @php
+                                            $igStatus = $post->instagram_status ?: 'pending';
+                                            $statusClass = 'success';
+                                            if($igStatus === 'failed') $statusClass = 'failed';
+                                            elseif($igStatus === 'pending') $statusClass = 'pending';
+
+                                            $igJsonData = [
+                                                'id' => $post->id,
+                                                'platform' => 'Instagram',
+                                                'message' => $post->message,
+                                                'status' => ucfirst($igStatus),
+                                                'page_name' => $post->facebookPage->name ?? 'None connected',
+                                                'instagram_username' => $post->facebookPage->instagram_username ?? null,
+                                                'media_url' => $mediaUrl,
+                                                'media_type' => $firstMedia ? $firstMedia->media_type : null,
+                                                'likes' => $post->dynamic_likes ?? 0,
+                                                'comments' => $post->dynamic_comments ?? 0,
+                                                'date' => $post->created_at->format('M d, Y \a\t h:i A'),
+                                                'error' => $post->instagram_error
+                                            ];
+                                        @endphp
+                                        <button type="button" class="planner-post-bubble ig-bubble {{ $statusClass }}" 
+                                                onclick="openPostPreview({{ json_encode($igJsonData) }})"
+                                                title="Instagram: {{ $post->message }}">
+                                            
+                                            <span class="platform-badge ig">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                                            </span>
+
+                                            @if($firstMedia && $firstMedia->media_type === 'image')
+                                                <img src="{{ $mediaUrl }}" style="width: 14px; height: 14px; border-radius: 3px; object-fit: cover; flex-shrink: 0;" />
+                                            @elseif($firstMedia && $firstMedia->media_type === 'video')
+                                                <div style="width: 14px; height: 14px; border-radius: 3px; background: black; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                    <i data-lucide="play" style="width: 6px; height: 6px; color: white; fill: white;"></i>
+                                                </div>
+                                            @endif
+                                            
+                                            <span class="bubble-text">
+                                                {{ Str::limit($post->message, 10) }}
+                                            </span>
+                                        </button>
+                                    @endif
                                 @endforeach
                             </div>
 
@@ -339,6 +401,12 @@
                 <!-- Media Preview container -->
                 <div id="previewMediaBox" style="display: none; border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border); background: black;">
                     <!-- Dynamically populated media -->
+                </div>
+
+                <!-- Error Message block if failed -->
+                <div id="previewErrorBlock" style="display: none; padding: 1rem; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 16px; color: #ef4444; font-size: 0.85rem;">
+                    <strong style="font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">Publishing Error:</strong>
+                    <span id="previewErrorText"></span>
                 </div>
 
                 <!-- Status & Stats Row -->
@@ -561,11 +629,11 @@
         .planner-post-bubble {
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 3px 5px;
-            border-radius: 6px;
+            gap: 6px;
+            padding: 4px 6px;
+            border-radius: 8px;
             text-decoration: none;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             color: var(--text-main);
             transition: all 0.2s;
             border: 1px solid rgba(255, 255, 255, 0.03);
@@ -575,9 +643,47 @@
             text-align: left;
         }
 
+        .platform-badge {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+        .platform-badge.fb {
+            background: #1877f2;
+        }
+        .platform-badge.ig {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+        }
+        .platform-badge svg {
+            width: 8px;
+            height: 8px;
+        }
+
+        .bubble-text {
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 55px;
+        }
+
+        .fb-bubble:hover {
+            box-shadow: 0 4px 10px rgba(24, 119, 242, 0.15);
+        }
+
+        .ig-bubble:hover {
+            box-shadow: 0 4px 10px rgba(225, 48, 108, 0.15);
+        }
+
         .planner-post-bubble.success {
             background: rgba(16, 185, 129, 0.06);
             color: #10b981;
+            border-color: rgba(16, 185, 129, 0.1);
         }
         .planner-post-bubble.success:hover {
             background: rgba(16, 185, 129, 0.15);
@@ -812,7 +918,14 @@
             const overlay = document.getElementById('postPreviewModal');
             
             // Set fields values
-            document.getElementById('previewPageBadge').innerText = post.page_name;
+            const pageBadge = document.getElementById('previewPageBadge');
+            if (post.platform === 'Instagram') {
+                pageBadge.innerText = 'Instagram: @' + (post.instagram_username || post.page_name);
+                pageBadge.style.background = 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)';
+            } else {
+                pageBadge.innerText = 'Facebook: ' + post.page_name;
+                pageBadge.style.background = '#1877f2';
+            }
             
             // Escape HTML and highlight hashtags/mentions beautifully
             let escapedMsg = post.message
@@ -840,6 +953,15 @@
                 statusBadge.style.color = '#f59e0b';
             } else {
                 statusBadge.style.color = '#ef4444';
+            }
+
+            // Error display logic
+            const errorBlock = document.getElementById('previewErrorBlock');
+            if (post.error) {
+                errorBlock.style.display = 'block';
+                document.getElementById('previewErrorText').innerText = post.error;
+            } else {
+                errorBlock.style.display = 'none';
             }
 
             // Media Rendering logic

@@ -369,6 +369,32 @@
             border: 1px solid var(--glass-border);
             font-weight: 600;
         }
+
+        /* Platform Comments Tabs Styles */
+        .platform-tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid transparent;
+        }
+        
+        .platform-tab-btn:hover {
+            color: var(--text-main);
+            background: var(--nav-active);
+        }
+
+        .platform-tab-btn.active-facebook {
+            background: rgba(24, 119, 242, 0.08) !important;
+            color: #1877f2 !important;
+            border: 1px solid rgba(24, 119, 242, 0.25) !important;
+            box-shadow: 0 4px 15px rgba(24, 119, 242, 0.05);
+        }
+
+        .platform-tab-btn.active-instagram {
+            background: rgba(225, 48, 108, 0.08) !important;
+            color: #e1306c !important;
+            border: 1px solid rgba(225, 48, 108, 0.25) !important;
+            box-shadow: 0 4px 15px rgba(225, 48, 108, 0.05);
+        }
     </style>
 
     <!-- Header Panel -->
@@ -379,7 +405,7 @@
             </div>
             <div>
                 <h2 style="margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">Social Comment Center</h2>
-                <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 2px;">Track feedback, view threads, and reply to posts on Facebook instantly.</p>
+                <p style="color: var(--text-muted); font-size: 0.8125rem; margin-top: 2px;">Track feedback, view threads, and reply to posts on Facebook and Instagram instantly.</p>
             </div>
         </div>
 
@@ -463,7 +489,17 @@
                                     </div>
                                 @endif
                                 <div style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
-                                    <span style="font-weight: 800; font-size: 0.75rem; color: var(--accent);">{{ $p->facebookPage->name }}</span>
+                                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+                                        <span style="font-weight: 800; font-size: 0.75rem; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $p->facebookPage->name }}</span>
+                                        <div style="display: flex; gap: 4px; align-items: center;">
+                                            @if($p->facebook_post_id)
+                                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #1877f2; display: inline-block;" title="Facebook"></span>
+                                            @endif
+                                            @if($p->instagram_post_id)
+                                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #e1306c; display: inline-block;" title="Instagram"></span>
+                                            @endif
+                                        </div>
+                                    </div>
                                     <span style="font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $p->message }}</span>
                                 </div>
                             </a>
@@ -476,15 +512,30 @@
             @if($post)
                 <div class="glass-inbox-card">
                     <h3 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-                        <i data-lucide="instagram" style="width: 16px; height: 16px;"></i> Post Context
+                        <i data-lucide="layers" style="width: 16px; height: 16px;"></i> Post Context
                     </h3>
                     
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;">
-                        <div style="width: 32px; height: 32px; border-radius: 8px; background: #1877f2; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;">F</div>
-                        <div>
-                            <div style="font-weight: 800; font-size: 0.875rem;">{{ $post->facebookPage->name }}</div>
-                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">Published Page</div>
-                        </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                        @if($post->facebook_post_id)
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 28px; height: 28px; border-radius: 6px; background: #1877f2; color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem;">F</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 0.8125rem;">{{ $post->facebookPage->name }}</div>
+                                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">Facebook Page</div>
+                                </div>
+                            </div>
+                        @endif
+                        @if($post->instagram_post_id)
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem;">
+                                    <i data-lucide="instagram" style="width: 12px; height: 12px; color: white;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 0.8125rem;">@{{ $post->facebookPage->instagram_username ?? 'Instagram Account' }}</div>
+                                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">Instagram Profile</div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     
                     <p style="font-size: 0.9375rem; line-height: 1.5; color: var(--text-main); font-weight: 500; font-style: italic; margin-bottom: 1.25rem; background: var(--bg-main); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--glass-border);">
@@ -576,137 +627,302 @@
                 </div>
             @endif
 
+            @php
+                $fbComments = $comments->where('platform', 'facebook');
+                $igComments = $comments->where('platform', 'instagram');
+            @endphp
+
+            <!-- Platform Tab Switcher -->
+            <div class="glass-inbox-card" style="padding: 0.5rem; margin-bottom: 1.5rem; display: flex; gap: 10px; border-radius: 16px; background: var(--sidebar-bg); border: 1px solid var(--glass-border);">
+                <button type="button" onclick="switchPlatformTab('facebook')" id="tab-btn-facebook" class="platform-tab-btn active-facebook" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none;">
+                    <i data-lucide="facebook" style="width: 18px; height: 18px;"></i>
+                    Facebook Comments
+                    <span class="tab-count-badge" style="background: #1877f2; color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;">{{ $fbComments->count() }}</span>
+                </button>
+                <button type="button" onclick="switchPlatformTab('instagram')" id="tab-btn-instagram" class="platform-tab-btn" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 1rem; border-radius: 12px; font-weight: 800; font-size: 0.95rem; border: none; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); outline: none;">
+                    <i data-lucide="instagram" style="width: 18px; height: 18px;"></i>
+                    Instagram Comments
+                    <span class="tab-count-badge" style="background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;">{{ $igComments->count() }}</span>
+                </button>
+            </div>
+
             <!-- Comments Timeline Stream -->
             <div>
-                @forelse($comments as $comment)
-                    @php
-                        // Choose a colorful avatar gradient dynamically based on user's name
-                        $char = strtoupper(substr($comment->user_name, 0, 1));
-                        if (preg_match('/[A-E]/', $char)) {
-                            $grad = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
-                        } elseif (preg_match('/[F-J]/', $char)) {
-                            $grad = 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)';
-                        } elseif (preg_match('/[K-O]/', $char)) {
-                            $grad = 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
-                        } elseif (preg_match('/[P-T]/', $char)) {
-                            $grad = 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)';
-                        } else {
-                            $grad = 'linear-gradient(135deg, #2575fc 0%, #6a11cb 100%)';
-                        }
-                    @endphp
+                <!-- Facebook Comments Section -->
+                <div id="facebook-comments-feed" class="platform-comments-feed">
+                    @forelse($fbComments as $comment)
+                        @php
+                            // Choose a colorful avatar gradient dynamically based on user's name
+                            $char = strtoupper(substr($comment->user_name, 0, 1));
+                            if (preg_match('/[A-E]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+                            } elseif (preg_match('/[F-J]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)';
+                            } elseif (preg_match('/[K-O]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
+                            } elseif (preg_match('/[P-T]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)';
+                            } else {
+                                $grad = 'linear-gradient(135deg, #2575fc 0%, #6a11cb 100%)';
+                            }
+                        @endphp
 
-                    <div class="comment-thread-wrapper glass-inbox-card">
-                        
-                        <!-- Root comment card block -->
-                        <div class="root-comment-container">
-                            <div class="avatar-circle" style="background: {{ $grad }};">
-                                {{ substr($comment->user_name, 0, 1) }}
-                            </div>
+                        <div class="comment-thread-wrapper glass-inbox-card">
                             
-                            <div class="comment-bubble-box">
-                                <div class="comment-header">
-                                    <div style="display: flex; align-items: center; gap: 8px;">
-                                        <span class="commenter-name">{{ $comment->user_name }}</span>
-                                        <span style="background: var(--nav-active); color: var(--text-muted); font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 6px;">USER</span>
-                                    </div>
-                                    <div style="display: flex; align-items: center; gap: 12px;">
-                                        <span class="comment-timestamp">{{ $comment->created_at->diffForHumans() }}</span>
-                                        <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment? This will delete it on Facebook as well!')" style="display: inline-block; margin: 0; padding: 0; line-height: 1;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'" title="Delete Comment">
-                                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                            <!-- Root comment card block -->
+                            <div class="root-comment-container">
+                                <div class="avatar-circle" style="background: {{ $grad }};">
+                                    {{ substr($comment->user_name, 0, 1) }}
                                 </div>
-                                <p class="comment-text">{{ $comment->message }}</p>
                                 
-                                <!-- In View All Mode, display context box showing which post this comment belongs to -->
-                                @if(!$post)
-                                    <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: var(--nav-active); border-left: 3px solid var(--accent); border-radius: 10px; display: flex; flex-direction: column; gap: 4px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">
-                                            <span>POST CONTEXT</span>
-                                            <span style="color: var(--accent); font-weight: 800;">{{ $comment->post->facebookPage->name }}</span>
+                                <div class="comment-bubble-box">
+                                    <div class="comment-header">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span class="commenter-name">{{ $comment->user_name }}</span>
+                                            <span style="background: rgba(24, 119, 242, 0.1); color: #1877f2; font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(24, 119, 242, 0.2);">
+                                                <i data-lucide="facebook" style="width: 10px; height: 10px;"></i> FB
+                                            </span>
                                         </div>
-                                        <div style="font-size: 0.8rem; color: var(--text-main); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                            "{{ $comment->post->message }}"
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <span class="comment-timestamp">{{ $comment->created_at->diffForHumans() }}</span>
+                                            <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment? This will delete it on Facebook as well!')" style="display: inline-block; margin: 0; padding: 0; line-height: 1;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'" title="Delete Comment">
+                                                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Nested threaded replies tree -->
-                        @if($comment->replies->isNotEmpty())
-                            <div class="replies-timeline-branch">
-                                @foreach($comment->replies->sortBy('created_at') as $reply)
-                                    @php
-                                        $isOfficial = ($reply->user_name === $comment->post->facebookPage->name);
-                                        
-                                        // Pick gradient for reply author avatar
-                                        $charR = strtoupper(substr($reply->user_name, 0, 1));
-                                        if ($isOfficial) {
-                                            $gradR = 'linear-gradient(135deg, #2563eb, #3b82f6)';
-                                        } elseif (preg_match('/[A-E]/', $charR)) {
-                                            $gradR = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
-                                        } else {
-                                            $gradR = 'linear-gradient(135deg, #2575fc 0%, #6a11cb 100%)';
-                                        }
-                                    @endphp
+                                    <p class="comment-text">{{ $comment->message }}</p>
                                     
-                                    <div class="reply-node {{ $isOfficial ? 'is-official' : '' }}">
-                                        <div class="avatar-circle" style="background: {{ $gradR }}; width: 34px; height: 34px; font-size: 0.8rem;">
-                                            {{ substr($reply->user_name, 0, 1) }}
-                                        </div>
-                                        
-                                        <div class="reply-bubble-box">
-                                            <div class="comment-header" style="margin-bottom: 0.25rem;">
-                                                <div style="display: flex; align-items: center; gap: 8px;">
-                                                    <span class="commenter-name" style="font-size: 0.875rem;">{{ $reply->user_name }}</span>
-                                                    @if($isOfficial)
-                                                        <span class="official-reply-badge">
-                                                            <i data-lucide="check-check" style="width: 10px; height: 10px;"></i> PAGE AUTHOR
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                                <div style="display: flex; align-items: center; gap: 12px;">
-                                                    <span class="comment-timestamp" style="font-size: 0.7rem;">{{ $reply->created_at->diffForHumans() }}</span>
-                                                    <form action="{{ route('comments.destroy', $reply->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reply? This will delete it on Facebook as well!')" style="display: inline-block; margin: 0; padding: 0; line-height: 1;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'" title="Delete Reply">
-                                                            <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                    <!-- In View All Mode, display context box showing which post this comment belongs to -->
+                                    @if(!$post)
+                                        <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: var(--nav-active); border-left: 3px solid var(--accent); border-radius: 10px; display: flex; flex-direction: column; gap: 4px;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">
+                                                <span>POST CONTEXT</span>
+                                                <span style="color: var(--accent); font-weight: 800;">{{ $comment->post->facebookPage->name }}</span>
                                             </div>
-                                            <p class="comment-text" style="font-size: 0.875rem;">{{ $reply->message }}</p>
+                                            <div style="font-size: 0.8rem; color: var(--text-main); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                "{{ $comment->post->message }}"
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Nested threaded replies tree -->
+                            @if($comment->replies->isNotEmpty())
+                                <div class="replies-timeline-branch">
+                                    @foreach($comment->replies->sortBy('created_at') as $reply)
+                                        @php
+                                            $isOfficial = ($reply->user_name === $comment->post->facebookPage->name);
+                                            
+                                            // Pick gradient for reply author avatar
+                                            $charR = strtoupper(substr($reply->user_name, 0, 1));
+                                            if ($isOfficial) {
+                                                $gradR = 'linear-gradient(135deg, #2563eb, #3b82f6)';
+                                            } elseif (preg_match('/[A-E]/', $charR)) {
+                                                $gradR = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+                                            } else {
+                                                $gradR = 'linear-gradient(135deg, #2575fc 0%, #6a11cb 100%)';
+                                            }
+                                        @endphp
+                                        
+                                        <div class="reply-node {{ $isOfficial ? 'is-official' : '' }}">
+                                            <div class="avatar-circle" style="background: {{ $gradR }}; width: 34px; height: 34px; font-size: 0.8rem;">
+                                                {{ substr($reply->user_name, 0, 1) }}
+                                            </div>
+                                            
+                                            <div class="reply-bubble-box">
+                                                <div class="comment-header" style="margin-bottom: 0.25rem;">
+                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                        <span class="commenter-name" style="font-size: 0.875rem;">{{ $reply->user_name }}</span>
+                                                        @if($isOfficial)
+                                                            <span class="official-reply-badge">
+                                                                <i data-lucide="check-check" style="width: 10px; height: 10px;"></i> PAGE AUTHOR
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <span class="comment-timestamp" style="font-size: 0.7rem;">{{ $reply->created_at->diffForHumans() }}</span>
+                                                        <form action="{{ route('comments.destroy', $reply->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reply? This will delete it on Facebook as well!')" style="display: inline-block; margin: 0; padding: 0; line-height: 1;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'" title="Delete Reply">
+                                                                <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <p class="comment-text" style="font-size: 0.875rem;">{{ $reply->message }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <!-- Inline Glass Reply Composer Form -->
+                            <div class="reply-composer-container">
+                                <form action="{{ route('comments.reply', $comment->id) }}" method="POST" class="reply-composer-form">
+                                    @csrf
+                                    <input type="text" name="message" id="reply-input-{{ $comment->id }}" placeholder="Write a reply to {{ $comment->user_name }}'s comment on Facebook..." required class="reply-composer-input" />
+                                    <button type="button" class="reply-submit-btn ai-reply-btn" data-comment-id="{{ $comment->id }}" data-comment-text="{{ htmlspecialchars($comment->message) }}" style="background: rgba(99, 102, 241, 0.1); color: var(--accent); margin-right: 4px; border: 1px solid rgba(99, 102, 241, 0.2);" onclick="generateAiReply(this)">
+                                        <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i> AI Reply
+                                    </button>
+                                    <button type="submit" class="reply-submit-btn" style="background: var(--accent); box-shadow: 0 4px 12px var(--accent-glow);">
+                                        <i data-lucide="send" style="width: 12px; height: 12px;"></i> Post Reply
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    @empty
+                        <div class="glass-inbox-card" style="text-align: center; padding: 4rem 2rem;">
+                            <i data-lucide="facebook" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <h2 style="font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem;">No Facebook Comments</h2>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto;">No comments recorded on Facebook under this selection. Tap sync or select another post to refresh.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Instagram Comments Section -->
+                <div id="instagram-comments-feed" class="platform-comments-feed" style="display: none;">
+                    @forelse($igComments as $comment)
+                        @php
+                            // Choose a colorful avatar gradient dynamically based on user's name
+                            $char = strtoupper(substr($comment->user_name, 0, 1));
+                            if (preg_match('/[A-E]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+                            } elseif (preg_match('/[F-J]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)';
+                            } elseif (preg_match('/[K-O]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)';
+                            } elseif (preg_match('/[P-T]/', $char)) {
+                                $grad = 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)';
+                            } else {
+                                $grad = 'linear-gradient(135deg, #2575fc 0%, #6a11cb 100%)';
+                            }
+                        @endphp
+
+                        <div class="comment-thread-wrapper glass-inbox-card">
+                            
+                            <!-- Root comment card block -->
+                            <div class="root-comment-container">
+                                <div class="avatar-circle" style="background: {{ $grad }};">
+                                    {{ substr($comment->user_name, 0, 1) }}
+                                </div>
+                                
+                                <div class="comment-bubble-box">
+                                    <div class="comment-header">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <span class="commenter-name">{{ $comment->user_name }}</span>
+                                            <span style="background: rgba(225, 48, 108, 0.1); color: #e1306c; font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(225, 48, 108, 0.2);">
+                                                <i data-lucide="instagram" style="width: 10px; height: 10px;"></i> IG
+                                            </span>
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <span class="comment-timestamp">{{ $comment->created_at->diffForHumans() }}</span>
+                                            <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment? This will delete it on Instagram as well!')" style="display: inline-block; margin: 0; padding: 0; line-height: 1;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'" title="Delete Comment">
+                                                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
-                                @endforeach
+                                    <p class="comment-text">{{ $comment->message }}</p>
+                                    
+                                    <!-- In View All Mode, display context box showing which post this comment belongs to -->
+                                    @if(!$post)
+                                        <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: var(--nav-active); border-left: 3px solid var(--accent); border-radius: 10px; display: flex; flex-direction: column; gap: 4px;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-muted); font-weight: 700;">
+                                                <span>POST CONTEXT</span>
+                                                <span style="color: var(--accent); font-weight: 800;">{{ $comment->post->facebookPage->name }}</span>
+                                            </div>
+                                            <div style="font-size: 0.8rem; color: var(--text-main); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                "{{ $comment->post->message }}"
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
-                        @endif
 
-                        <!-- Inline Glass Reply Composer Form -->
-                        <div class="reply-composer-container">
-                            <form action="{{ route('comments.reply', $comment->id) }}" method="POST" class="reply-composer-form">
-                                @csrf
-                                <input type="text" name="message" placeholder="Write a reply to {{ $comment->user_name }}'s comment..." required class="reply-composer-input" />
-                                <button type="submit" class="reply-submit-btn">
-                                    <i data-lucide="send" style="width: 12px; height: 12px;"></i> Post Reply
-                                </button>
-                            </form>
+                            <!-- Nested threaded replies tree -->
+                            @if($comment->replies->isNotEmpty())
+                                <div class="replies-timeline-branch">
+                                    @foreach($comment->replies->sortBy('created_at') as $reply)
+                                        @php
+                                            $isOfficial = ($reply->user_name === $comment->post->facebookPage->instagram_username || $reply->user_name === 'Instagram Admin');
+                                            
+                                            // Pick gradient for reply author avatar
+                                            $charR = strtoupper(substr($reply->user_name, 0, 1));
+                                            if ($isOfficial) {
+                                                $gradR = 'linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)';
+                                            } elseif (preg_match('/[A-E]/', $charR)) {
+                                                $gradR = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+                                            } else {
+                                                $gradR = 'linear-gradient(135deg, #2575fc 0%, #6a11cb 100%)';
+                                            }
+                                        @endphp
+                                        
+                                        <div class="reply-node {{ $isOfficial ? 'is-official' : '' }}">
+                                            <div class="avatar-circle" style="background: {{ $gradR }}; width: 34px; height: 34px; font-size: 0.8rem;">
+                                                {{ substr($reply->user_name, 0, 1) }}
+                                            </div>
+                                            
+                                            <div class="reply-bubble-box">
+                                                <div class="comment-header" style="margin-bottom: 0.25rem;">
+                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                        <span class="commenter-name" style="font-size: 0.875rem;">{{ $reply->user_name }}</span>
+                                                        @if($isOfficial)
+                                                            <span class="official-reply-badge" style="background: rgba(225, 48, 108, 0.1); color: #e1306c; border-color: rgba(225, 48, 108, 0.2);">
+                                                                <i data-lucide="check-check" style="width: 10px; height: 10px;"></i> IG ADMIN
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <span class="comment-timestamp" style="font-size: 0.7rem;">{{ $reply->created_at->diffForHumans() }}</span>
+                                                        <form action="{{ route('comments.destroy', $reply->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reply? This will delete it on Instagram as well!')" style="display: inline-block; margin: 0; padding: 0; line-height: 1;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" style="background: none; border: none; padding: 4px; cursor: pointer; color: var(--text-muted); transition: 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'" title="Delete Reply">
+                                                                <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <p class="comment-text" style="font-size: 0.875rem;">{{ $reply->message }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <!-- Inline Glass Reply Composer Form -->
+                            <div class="reply-composer-container">
+                                <form action="{{ route('comments.reply', $comment->id) }}" method="POST" class="reply-composer-form">
+                                    @csrf
+                                    <input type="text" name="message" id="reply-input-{{ $comment->id }}" placeholder="Write a reply to {{ $comment->user_name }}'s comment on Instagram..." required class="reply-composer-input" />
+                                    <button type="button" class="reply-submit-btn ai-reply-btn" data-comment-id="{{ $comment->id }}" data-comment-text="{{ htmlspecialchars($comment->message) }}" style="background: rgba(225, 48, 108, 0.1); color: #e1306c; margin-right: 4px; border: 1px solid rgba(225, 48, 108, 0.2);" onclick="generateAiReply(this)">
+                                        <i data-lucide="sparkles" style="width: 12px; height: 12px;"></i> AI Reply
+                                    </button>
+                                    <button type="submit" class="reply-submit-btn" style="background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); box-shadow: 0 4px 12px rgba(225, 48, 108, 0.2);">
+                                        <i data-lucide="send" style="width: 12px; height: 12px;"></i> Post Reply
+                                    </button>
+                                </form>
+                            </div>
+
                         </div>
-
-                    </div>
-                @empty
-                    <div class="glass-inbox-card" style="text-align: center; padding: 4rem 2rem;">
-                        <i data-lucide="message-square" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
-                        <h2 style="font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem;">Inbox is completely clear!</h2>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto;">No comments recorded under the active selection. Tap sync or select another post to refresh.</p>
-                    </div>
-                @endforelse
+                    @empty
+                        <div class="glass-inbox-card" style="text-align: center; padding: 4rem 2rem;">
+                            <i data-lucide="instagram" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <h2 style="font-weight: 800; font-size: 1.5rem; margin-bottom: 0.5rem;">No Instagram Comments</h2>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin: 0 auto;">No comments recorded on Instagram under this selection. Tap sync or select another post to refresh.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </div>
 
@@ -732,5 +948,86 @@
                 dropdown.style.display = 'none';
             }
         });
+
+        // Switch Platform Tabs function
+        function switchPlatformTab(platform) {
+            // Hide all feeds
+            document.querySelectorAll('.platform-comments-feed').forEach(feed => {
+                feed.style.display = 'none';
+            });
+
+            // Remove active classes
+            const fbBtn = document.getElementById('tab-btn-facebook');
+            const igBtn = document.getElementById('tab-btn-instagram');
+            if (fbBtn) fbBtn.classList.remove('active-facebook');
+            if (igBtn) igBtn.classList.remove('active-instagram');
+
+            // Show selected feed and add active class
+            if (platform === 'facebook') {
+                const fbFeed = document.getElementById('facebook-comments-feed');
+                if (fbFeed) fbFeed.style.display = 'block';
+                if (fbBtn) fbBtn.classList.add('active-facebook');
+            } else {
+                const igFeed = document.getElementById('instagram-comments-feed');
+                if (igFeed) igFeed.style.display = 'block';
+                if (igBtn) igBtn.classList.add('active-instagram');
+            }
+            
+            // Save state
+            localStorage.setItem('active_comments_tab', platform);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTab = localStorage.getItem('active_comments_tab') || 'facebook';
+            switchPlatformTab(savedTab);
+        });
+
+        // Generate AI Reply Function
+        async function generateAiReply(btn) {
+            const commentId = btn.getAttribute('data-comment-id');
+            const commentText = btn.getAttribute('data-comment-text');
+            const inputField = document.getElementById('reply-input-' + commentId);
+            const originalHtml = btn.innerHTML;
+            
+            if(!inputField) return;
+            
+            // Set Loading State
+            btn.innerHTML = '<i data-lucide="loader-2" style="width: 12px; height: 12px;" class="lucide-spin"></i> Generating...';
+            btn.disabled = true;
+            if(window.lucide) window.lucide.createIcons();
+
+            try {
+                const response = await fetch("{{ route('ai.reply') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        comment_text: commentText,
+                        tone: 'casual',
+                        language: 'auto'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.reply) {
+                    inputField.value = data.reply;
+                    inputField.focus();
+                } else if (data.error) {
+                    alert('AI Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error("AI Generation Error", error);
+                alert("Failed to generate AI reply.");
+            } finally {
+                // Restore Button State
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                if(window.lucide) window.lucide.createIcons();
+            }
+        }
     </script>
 @endsection

@@ -71,6 +71,9 @@ class DashboardController extends Controller
             'total_comments' => Comment::whereHas('post', function($q) use ($user) {
                 $q->where('user_id', $user->id);
             })->count(),
+            'success_posts' => \App\Models\Post::where('user_id', $user->id)->where('status', 'success')->count(),
+            'pending_posts' => \App\Models\Post::where('user_id', $user->id)->where('status', 'pending')->count(),
+            'failed_posts' => \App\Models\Post::where('user_id', $user->id)->where('status', 'failed')->count(),
         ];
 
         $recentPosts = $user->posts()
@@ -85,11 +88,37 @@ class DashboardController extends Controller
             $query->where('user_id', $user->id);
         })->with('post')->latest()->take(5)->get();
 
+        // --- Chart Data Calculations ---
+        // 1. Posts Over Time (Last 7 Days)
+        $chartDates = collect();
+        $chartPostsData = collect();
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $chartDates->push(now()->subDays($i)->format('M d'));
+            
+            $count = \App\Models\Post::where('user_id', $user->id)
+                ->whereDate('created_at', $date)
+                ->count();
+                
+            $chartPostsData->push($count);
+        }
+
+        // 2. Post Status Distribution (Success, Failed, Pending)
+        $successCount = \App\Models\Post::where('user_id', $user->id)->where('status', 'success')->count();
+        $failedCount = \App\Models\Post::where('user_id', $user->id)->where('status', 'failed')->count();
+        $pendingCount = \App\Models\Post::where('user_id', $user->id)->where('status', 'pending')->count();
+        
+        $chartStatusData = [$successCount, $failedCount, $pendingCount];
+
         return view('dashboard', compact(
             'stats',
             'recentPosts',
             'facebookAccounts',
-            'recentComments'
+            'recentComments',
+            'chartDates',
+            'chartPostsData',
+            'chartStatusData'
         ));
     }
 }

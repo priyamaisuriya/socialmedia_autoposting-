@@ -28,6 +28,8 @@ class FacebookController extends Controller
 
     public function redirect()
     {
+        session(['oauth_flow' => 'facebook']);
+
         return Socialite::driver('facebook')
             ->scopes([
                 'public_profile',
@@ -36,7 +38,37 @@ class FacebookController extends Controller
                 'pages_read_engagement',
                 'pages_manage_posts',
                 'pages_manage_engagement',
-                'publish_video'
+                'publish_video',
+                'business_management',
+                'instagram_basic',
+                'instagram_content_publish',
+                'instagram_manage_comments',
+                'ads_management',
+                'ads_read'
+            ])
+            ->with(['auth_type' => 'rerequest'])
+            ->redirect();
+    }
+
+    public function redirectInstagram()
+    {
+        session(['oauth_flow' => 'instagram']);
+
+        return Socialite::driver('facebook')
+            ->scopes([
+                'public_profile',
+                'email',
+                'pages_show_list',
+                'pages_read_engagement',
+                'pages_manage_posts',
+                'pages_manage_engagement',
+                'publish_video',
+                'business_management',
+                'instagram_basic',
+                'instagram_content_publish',
+                'instagram_manage_comments',
+                'ads_management',
+                'ads_read'
             ])
             ->with(['auth_type' => 'rerequest'])
             ->redirect();
@@ -46,6 +78,7 @@ class FacebookController extends Controller
     {
         try {
             $fbUser = Socialite::driver('facebook')->user();
+            $flow = session('oauth_flow', 'facebook');
 
             // 1. Get the current user or find/create one
             $user = Auth::user();
@@ -78,16 +111,35 @@ class FacebookController extends Controller
 
             // 3. Fetch Pages
             $pagesData = $this->facebookApi->getPages($fbUser->token);
+            \Illuminate\Support\Facades\Log::info('Meta Pages Data:', ['pages' => $pagesData, 'flow' => $flow]);
             $pagesSynced = 0;
+            $igSynced = 0;
 
             if (isset($pagesData['error'])) {
-                return redirect()->route('facebook.index')->with('error', 'Facebook API Error: ' . $pagesData['error']['message']);
+                $targetIndex = $flow === 'instagram' ? 'instagram.index' : 'facebook.index';
+                return redirect()->route($targetIndex)->with('error', 'Meta API Error: ' . $pagesData['error']['message']);
             }
 
             if (isset($pagesData['data']) && count($pagesData['data']) > 0) {
                 foreach ($pagesData['data'] as $page) {
-                    // Fixed: Use BOTH user_id + page_id as unique key
-                    // This ensures each user has their own isolated page record
+                    $igId = $page['instagram_business_account']['id'] ?? null;
+                    $igUser = $page['instagram_business_account']['username'] ?? null;
+
+                    // If it is the Instagram flow, we filter and only import pages with associated IG profiles
+                    if ($flow === 'instagram' && !$igId) {
+                        continue;
+                    }
+
+                    // Retrieve existing page to keep is_instagram_connected status if it was already configured
+                    $existingPage = FacebookPage::where('user_id', $user->id)
+                        ->where('page_id', $page['id'])
+                        ->first();
+
+                    $isIgConnected = $existingPage ? $existingPage->is_instagram_connected : false;
+                    if ($flow === 'instagram' && $igId) {
+                        $isIgConnected = true;
+                    }
+
                     FacebookPage::updateOrCreate(
                         [
                             'user_id' => $user->id,
@@ -96,11 +148,28 @@ class FacebookController extends Controller
                         [
                             'name' => $page['name'],
                             'access_token' => $page['access_token'],
+                            'instagram_account_id' => $igId,
+                            'instagram_username' => $igUser,
+                            'is_instagram_connected' => $isIgConnected,
                         ]
                     );
-                    $pagesSynced++;
+
+                    if ($flow === 'instagram' && $igId) {
+                        $igSynced++;
+                    } else {
+                        $pagesSynced++;
+                    }
                 }
-                return redirect()->route('dashboard')->with('success', "Facebook Account Connected! $pagesSynced pages synced.");
+
+                if ($flow === 'instagram') {
+                    if ($igSynced > 0) {
+                        return redirect()->route('instagram.index')->with('success', "Instagram Account Connected! $igSynced accounts synced.");
+                    } else {
+                        return redirect()->route('instagram.index')->with('error', "No linked Instagram Business accounts found on your Facebook Pages.");
+                    }
+                } else {
+                    return redirect()->route('facebook.index')->with('success', "Facebook Account Connected! $pagesSynced pages synced.");
+                }
             } else {
                 // Fetch granted permissions to see what Facebook actually approved
                 $permissions = Http::get("https://graph.facebook.com/v19.0/me/permissions", [
@@ -115,7 +184,8 @@ class FacebookController extends Controller
                     $permsString = implode(', ', array_column($granted, 'permission'));
                 }
 
-                return redirect()->route('facebook.index')->with('error', "No Pages Found. Granted permissions: [{$permsString}]. Ensure you select the pages during login.");
+                $targetIndex = $flow === 'instagram' ? 'instagram.index' : 'facebook.index';
+                return redirect()->route($targetIndex)->with('error', "No Pages Found. Granted permissions: [{$permsString}]. Ensure you select the pages during login.");
             }
             
         } catch (\Exception $e) {
