@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 class GeminiApiService
 {
     protected $apiKey;
-    protected $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+    protected $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
     public function __construct()
     {
@@ -70,7 +70,7 @@ CRITICAL: You MUST respond ONLY with a valid JSON object. Do not include markdow
 }";
 
         try {
-            $response = Http::timeout(30)->post("{$this->baseUrl}?key={$this->apiKey}", [
+            $response = Http::withoutVerifying()->timeout(60)->post("{$this->baseUrl}?key={$this->apiKey}", [
                 'contents' => [
                     [
                         'parts' => [
@@ -81,7 +81,11 @@ CRITICAL: You MUST respond ONLY with a valid JSON object. Do not include markdow
             ]);
 
             if ($response->failed()) {
-                return ['error' => 'Gemini API connection failed: ' . $response->body()];
+                $errorData = json_decode($response->body(), true);
+                if (isset($errorData['error']['message'])) {
+                    return ['error' => $errorData['error']['message']];
+                }
+                return ['error' => 'Gemini API connection failed (HTTP ' . $response->status() . ').'];
             }
 
             $data = $response->json();
@@ -155,7 +159,7 @@ CRITICAL: You MUST respond ONLY with a valid JSON object. Do not include markdow
 }";
 
         try {
-            $response = Http::timeout(30)->post("{$this->baseUrl}?key={$this->apiKey}", [
+            $response = Http::withoutVerifying()->timeout(60)->post("{$this->baseUrl}?key={$this->apiKey}", [
                 'contents' => [
                     [
                         'parts' => [
@@ -166,7 +170,11 @@ CRITICAL: You MUST respond ONLY with a valid JSON object. Do not include markdow
             ]);
 
             if ($response->failed()) {
-                return ['error' => 'Gemini API connection failed: ' . $response->body()];
+                $errorData = json_decode($response->body(), true);
+                if (isset($errorData['error']['message'])) {
+                    return ['error' => $errorData['error']['message']];
+                }
+                return ['error' => 'Gemini API connection failed (HTTP ' . $response->status() . ').'];
             }
 
             $data = $response->json();

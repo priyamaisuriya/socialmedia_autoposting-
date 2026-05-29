@@ -41,9 +41,9 @@
                             {{ $page->name }} 
                             @if($page->instagram_username)
                                 @if($page->is_instagram_connected)
-                                    (IG Active: @{{ $page->instagram_username }})
+                                    (IG Active: {{ $page->instagram_username }})
                                 @else
-                                    (IG Inactive: @{{ $page->instagram_username }})
+                                    (IG Inactive: {{ $page->instagram_username }})
                                 @endif
                             @endif
                         </option>
