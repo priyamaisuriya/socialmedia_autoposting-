@@ -31,6 +31,8 @@
             --accent-glow: rgba(37, 99, 235, 0.15);
             --card-bg: #ffffff;
             --nav-active: #f1f5f9;
+            --banner-bg: linear-gradient(145deg, #ffffff, #f1f5f9, #ffffff);
+            --banner-border: var(--glass-border);
         }
 
         [data-theme="dark"] {
@@ -44,6 +46,8 @@
             --accent-glow: rgba(59, 130, 246, 0.3);
             --card-bg: #0c111d;
             --nav-active: rgba(255, 255, 255, 0.03);
+            --banner-bg: linear-gradient(145deg, #1e1b4b, #312e81, #1e1b4b);
+            --banner-border: rgba(99, 102, 241, 0.3);
         }
 
         @keyframes fadeInUp {
@@ -366,11 +370,10 @@
             localStorage.setItem('sidebar-collapsed', nowCollapsed);
         });
 
-        // Theme Toggle Logic
         const themeToggle = document.getElementById('theme-toggle');
         const sunIcon = document.getElementById('sun-icon');
         const moonIcon = document.getElementById('moon-icon');
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateIcons(savedTheme);
 
@@ -380,6 +383,7 @@
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateIcons(newTheme);
+            window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: newTheme } }));
         });
 
         function updateIcons(theme) {

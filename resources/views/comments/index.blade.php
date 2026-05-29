@@ -7,6 +7,14 @@
             --inbox-sidebar-width: 360px;
         }
 
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .lucide-spin {
+            animation: spin 1s linear infinite;
+        }
+
         .social-inbox-container {
             display: grid;
             grid-template-columns: var(--inbox-sidebar-width) 1fr;
@@ -531,7 +539,7 @@
                                     <i data-lucide="instagram" style="width: 12px; height: 12px; color: white;"></i>
                                 </div>
                                 <div>
-                                    <div style="font-weight: 800; font-size: 0.8125rem;">@{{ $post->facebookPage->instagram_username ?? 'Instagram Account' }}</div>
+                                    <div style="font-weight: 800; font-size: 0.8125rem;">{{ $post->facebookPage->instagram_username ?? 'Instagram Account' }}</div>
                                     <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">Instagram Profile</div>
                                 </div>
                             </div>

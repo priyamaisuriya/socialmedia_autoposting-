@@ -10,8 +10,12 @@
     @vite(['resources/css/premium.css'])
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(circle at top right, #1e293b, #0f172a);">
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
     
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+        <i data-lucide="moon"></i>
+    </button>
+
     <div style="text-align: center; max-width: 800px; padding: 2rem;">
         <div style="font-size: 4rem; font-weight: 800; margin-bottom: 1rem;">
             FB<span style="color: var(--accent);">Manager</span>
@@ -36,17 +40,17 @@
         </div>
 
         <div style="margin-top: 5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
-            <div>
+            <div class="premium-card">
                 <i data-lucide="layers" style="color: var(--accent); margin-bottom: 1rem;"></i>
                 <h3 style="margin-bottom: 0.5rem;">Multi-Page Support</h3>
                 <p style="color: var(--text-muted); font-size: 0.875rem;">Connect and manage unlimited Facebook pages effortlessly.</p>
             </div>
-            <div>
+            <div class="premium-card">
                 <i data-lucide="send" style="color: var(--accent); margin-bottom: 1rem;"></i>
                 <h3 style="margin-bottom: 0.5rem;">One-Click Publish</h3>
                 <p style="color: var(--text-muted); font-size: 0.875rem;">Post text, images, and videos across all your pages instantly.</p>
             </div>
-            <div>
+            <div class="premium-card">
                 <i data-lucide="bar-chart-2" style="color: var(--accent); margin-bottom: 1rem;"></i>
                 <h3 style="margin-bottom: 0.5rem;">Deep Analytics</h3>
                 <p style="color: var(--text-muted); font-size: 0.875rem;">Track engagement, likes, and comments with visual reports.</p>
@@ -56,6 +60,35 @@
 
     <script>
         lucide.createIcons();
+        
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                updateIcon('moon');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+                updateIcon('sun');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function updateIcon(name) {
+            const btn = document.getElementById('theme-btn');
+            if(btn) {
+                btn.innerHTML = `<i data-lucide="${name}"></i>`;
+                lucide.createIcons();
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+            updateIcon('sun');
+        } else {
+            updateIcon('moon');
+        }
     </script>
 </body>
 </html>

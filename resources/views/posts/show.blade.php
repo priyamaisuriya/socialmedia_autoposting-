@@ -443,36 +443,69 @@
                 <!-- Engagement metrics: Glowing reactions and Comments -->
                 <div style="display: flex; flex-direction: column; gap: 1rem;">
                     @php
-                        $totalComments = max($post->dynamic_comments ?? 0, \App\Models\Comment::where('post_id', $post->id)->count());
-                        $totalLikes = max($post->dynamic_likes ?? 0, $post->likes_count ?? 0);
-                        $engagement = ($totalLikes + $totalComments) * 1.5;
+                        $fbComments = max($post->dynamic_fb_comments ?? 0, $post->fb_comments_count ?? 0);
+                        $igComments = max($post->dynamic_ig_comments ?? 0, $post->ig_comments_count ?? 0);
+                        $fbLikes = max($post->dynamic_fb_likes ?? 0, $post->fb_likes_count ?? 0);
+                        $igLikes = max($post->dynamic_ig_likes ?? 0, $post->ig_likes_count ?? 0);
                     @endphp
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <!-- Reactions -->
                         <div class="metric-card reactions">
-                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Likes</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Total Likes</span>
                             <div style="font-size: 1.75rem; font-weight: 900; color: #f43f5e; display: flex; align-items: center; gap: 6px;">
                                 <i data-lucide="{{ $post->hide_likes ? 'eye-off' : 'heart' }}" style="width: 20px; height: 20px; fill: {{ $post->hide_likes ? 'none' : '#f43f5e' }}; color: {{ $post->hide_likes ? 'var(--text-muted)' : '#f43f5e' }};"></i>
                                 @if($post->hide_likes)
                                     <span style="font-size: 1rem; color: var(--text-muted);">Hidden</span>
                                 @else
-                                    {{ number_format($totalLikes) }}
+                                    {{ number_format($fbLikes + $igLikes) }}
                                 @endif
                             </div>
+                            @if(!$post->hide_likes)
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                @if($post->post_to_facebook)
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; background: rgba(24, 119, 242, 0.08); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(24, 119, 242, 0.2);">
+                                    <i data-lucide="facebook" style="width: 14px; height: 14px; color: #1877f2; fill: #1877f2; border: none;"></i>
+                                    <span style="font-weight: 800; font-size: 0.85rem; color: #1877f2;">{{ number_format($fbLikes) }}</span>
+                                </div>
+                                @endif
+                                @if($post->post_to_instagram)
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; background: rgba(225, 48, 108, 0.08); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(225, 48, 108, 0.2);">
+                                    <i data-lucide="instagram" style="width: 14px; height: 14px; color: #e1306c;"></i>
+                                    <span style="font-weight: 800; font-size: 0.85rem; color: #e1306c;">{{ number_format($igLikes) }}</span>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
                         </div>
                         
                         <!-- Comments -->
                         <div class="metric-card comments">
-                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Comments</span>
+                            <span style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Total Comments</span>
                             <div style="font-size: 1.75rem; font-weight: 900; color: var(--accent); display: flex; align-items: center; gap: 6px;">
                                 <i data-lucide="{{ $post->hide_comments ? 'eye-off' : 'message-circle' }}" style="width: 20px; height: 20px; fill: {{ $post->hide_comments ? 'none' : 'var(--accent)' }}; color: {{ $post->hide_comments ? 'var(--text-muted)' : 'var(--accent)' }};"></i>
                                 @if($post->hide_comments)
                                     <span style="font-size: 1rem; color: var(--text-muted);">Hidden</span>
                                 @else
-                                    {{ number_format($totalComments) }}
+                                    {{ number_format($fbComments + $igComments) }}
                                 @endif
                             </div>
+                            @if(!$post->hide_comments)
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                @if($post->post_to_facebook)
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; background: rgba(24, 119, 242, 0.08); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(24, 119, 242, 0.2);">
+                                    <i data-lucide="facebook" style="width: 14px; height: 14px; color: #1877f2; fill: #1877f2; border: none;"></i>
+                                    <span style="font-weight: 800; font-size: 0.85rem; color: #1877f2;">{{ number_format($fbComments) }}</span>
+                                </div>
+                                @endif
+                                @if($post->post_to_instagram)
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 6px; flex: 1; background: rgba(225, 48, 108, 0.08); padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(225, 48, 108, 0.2);">
+                                    <i data-lucide="instagram" style="width: 14px; height: 14px; color: #e1306c;"></i>
+                                    <span style="font-weight: 800; font-size: 0.85rem; color: #e1306c;">{{ number_format($igComments) }}</span>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
                         </div>
                     </div>
 

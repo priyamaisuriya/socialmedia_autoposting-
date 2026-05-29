@@ -3,99 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Manager - Login</title>
+    <title>FB Manager - Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    @vite(['resources/css/premium.css'])
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --input-bg: #f1f5f9;
-            --accent: #2563eb;
-            --accent-glow: rgba(37, 99, 235, 0.1);
-        }
-
-        [data-theme="dark"] {
-            --bg: #0a0e17;
-            --card-bg: #161b2a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(255, 255, 255, 0.03);
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.2);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            background-color: var(--bg);
-            background-image: radial-gradient(at 0% 0%, var(--accent-glow) 0px, transparent 50%),
-                              radial-gradient(at 100% 100%, var(--accent-glow) 0px, transparent 50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: var(--text-main);
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: 2rem;
-            right: 2.5rem;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.05);
-            border-color: var(--accent);
-        }
-
         .container {
             width: 100%;
             max-width: 1000px;
             height: 640px;
-            background: var(--card-bg);
+            background: var(--bg-card);
             border-radius: 32px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             display: flex;
-            border: 1px solid var(--border);
+            border: 1px solid var(--glass-border);
             position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            margin: 0 auto;
         }
 
-        /* Left Side */
         .left-side {
             width: 45%;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #0f172a 100%);
             color: white;
             padding: 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
-            border-right: 1px solid var(--border);
         }
 
         .left-side h1 {
@@ -109,18 +43,17 @@
         .left-side p {
             font-size: 1.1rem;
             line-height: 1.6;
-            color: #94a3b8;
+            color: rgba(255,255,255,0.8);
             max-width: 320px;
         }
 
-        /* Right Side */
         .right-side {
             width: 55%;
             padding: 60px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: var(--card-bg);
+            background: var(--bg-card);
         }
 
         .login-box {
@@ -145,52 +78,6 @@
             margin-bottom: 28px;
         }
 
-        .form-label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            font-size: 1rem;
-            background: var(--input-bg);
-            color: var(--text-main);
-            outline: none;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent);
-            background: var(--card-bg);
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
-            margin-top: 8px;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.5);
-        }
-
         .divider {
             display: flex;
             align-items: center;
@@ -204,30 +91,10 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: var(--border);
+            background: var(--glass-border);
         }
 
         .divider span { margin: 0 20px; }
-
-        .facebook-btn {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            padding: 16px;
-            border-radius: 16px;
-            background: #1877f2;
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            box-shadow: 0 10px 15px -3px rgba(24, 119, 242, 0.3);
-        }
-
-        .facebook-btn:hover {
-            transform: translateY(-2px);
-            background: #0d65d9;
-        }
 
         .register-text {
             text-align: center;
@@ -243,6 +110,16 @@
             margin-left: 6px;
         }
 
+        /* Fix autofill styles */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px var(--bg-main) inset !important;
+            -webkit-text-fill-color: var(--text-main) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
         @media(max-width: 900px) {
             .container { height: auto; flex-direction: column; border-radius: 20px; }
             .left-side, .right-side { width: 100%; padding: 40px; }
@@ -251,14 +128,15 @@
         }
     </style>
 </head>
-<body>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 20px;">
+
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
         <i data-lucide="moon"></i>
     </button>
 
     <div class="container">
         <div class="left-side">
-            <h1>Social<br>Manager</h1>
+            <h1>FB<br><span style="color: var(--bg-main);">Manager</span></h1>
             <p>Your all-in-one platform for professional Facebook management and automation.</p>
         </div>
 
@@ -270,21 +148,21 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required autofocus class="form-input" placeholder="name@example.com">
+                        <label class="input-label">Email Address</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required autofocus class="premium-input" placeholder="name@example.com">
                         @error('email') <div style="color: #ef4444; font-size: 0.8rem; margin-top: 8px;">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" required class="form-input" placeholder="••••••••">
+                        <label class="input-label">Password</label>
+                        <input type="password" name="password" required class="premium-input" placeholder="••••••••">
                     </div>
 
-                    <button type="submit" class="login-btn">Login to Dashboard</button>
+                    <button type="submit" class="btn-premium" style="width: 100%; margin-top: 8px; padding: 1rem; font-size: 1.1rem; justify-content: center;">Login to Dashboard</button>
 
                     <div class="divider"><span>OR</span></div>
 
-                    <a href="/auth/facebook" class="facebook-btn">
+                    <a href="/auth/facebook" class="btn-facebook" style="width: 100%; justify-content: center;">
                         <i data-lucide="facebook"></i> Continue with Facebook
                     </a>
 
@@ -301,30 +179,31 @@
         
         function toggleTheme() {
             const body = document.body;
-            const btn = document.getElementById('theme-btn');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
+            if (body.getAttribute('data-theme') === 'light') {
                 body.removeAttribute('data-theme');
                 updateIcon('moon');
-                localStorage.setItem('auth-theme', 'light');
+                localStorage.setItem('theme', 'dark');
             } else {
-                body.setAttribute('data-theme', 'dark');
+                body.setAttribute('data-theme', 'light');
                 updateIcon('sun');
-                localStorage.setItem('auth-theme', 'dark');
+                localStorage.setItem('theme', 'light');
             }
         }
 
         function updateIcon(name) {
             const btn = document.getElementById('theme-btn');
-            btn.innerHTML = `<i data-lucide="${name}"></i>`;
-            lucide.createIcons();
+            if(btn) {
+                btn.innerHTML = `<i data-lucide="${name}"></i>`;
+                lucide.createIcons();
+            }
         }
 
-        // Initialize theme
-        const savedTheme = localStorage.getItem('auth-theme');
-        if (savedTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.setAttribute('data-theme', 'light');
             updateIcon('sun');
+        } else {
+            updateIcon('moon');
         }
     </script>
 </body>

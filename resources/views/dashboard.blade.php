@@ -222,19 +222,19 @@
     @endif
 
     <!-- Delivery Analytics Banner (Creative Section) -->
-    <div style="margin-bottom: 3rem; background: linear-gradient(145deg, #1e1b4b, #312e81, #1e1b4b); border-radius: 32px; padding: 2.5rem; border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; overflow: hidden;">
+    <div style="margin-bottom: 3rem; background: var(--banner-bg); border-radius: 32px; padding: 2.5rem; border: 1px solid var(--banner-border); box-shadow: 0 15px 35px rgba(0,0,0,0.03); position: relative; overflow: hidden; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
         <!-- Background decorations -->
-        <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
-        <div style="position: absolute; bottom: -100px; right: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
+        <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -100px; right: -100px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%); border-radius: 50%;"></div>
         
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; position: relative; z-index: 10;">
             <div>
-                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px;">
+                <h2 style="margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
                     <i data-lucide="rocket" style="color: #a855f7;"></i> Publishing Pipeline
                 </h2>
-                <p style="margin: 0.25rem 0 0 0; color: #94a3b8; font-size: 0.9rem;">Real-time status of your content delivery</p>
+                <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Real-time status of your content delivery</p>
             </div>
-            <div style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); color: #fff; font-weight: 700; font-size: 0.85rem;">
+            <div style="background: rgba(168, 85, 247, 0.1); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid rgba(168, 85, 247, 0.2); color: var(--text-main); font-weight: 700; font-size: 0.85rem;">
                 Total Pipeline: <span style="color: #a855f7;">{{ number_format($stats['total_posts']) }}</span> Posts
             </div>
         </div>
@@ -242,46 +242,46 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; position: relative; z-index: 10;">
             
             <!-- Success Posts (Creative) -->
-            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);">
+                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);">
                         <i data-lucide="check-circle" style="color: #fff; width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <div style="color: #10b981; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Published</div>
-                        <div style="color: #fff; font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['success_posts']) }}</div>
+                        <div style="color: var(--text-main); font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['success_posts']) }}</div>
                     </div>
                 </div>
-                <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
+                <div style="background: rgba(0,0,0,0.05); height: 6px; border-radius: 3px; overflow: hidden;">
                     <div style="width: {{ $stats['total_posts'] > 0 ? ($stats['success_posts'] / $stats['total_posts']) * 100 : 0 }}%; height: 100%; background: #10b981; border-radius: 3px;"></div>
                 </div>
             </div>
 
             <!-- Pending Posts (Creative) -->
-            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.15); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(245, 158, 11, 0.3);">
+                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #f59e0b, #d97706); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(245, 158, 11, 0.2);">
                         <i data-lucide="clock" style="color: #fff; width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <div style="color: #f59e0b; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Pending</div>
-                        <div style="color: #fff; font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['pending_posts']) }}</div>
+                        <div style="color: var(--text-main); font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['pending_posts']) }}</div>
                     </div>
                 </div>
-                <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
-                    <div style="width: {{ $stats['total_posts'] > 0 ? ($stats['pending_posts'] / $stats['total_posts']) * 100 : 0 }}%; height: 100%; background: #f59e0b; border-radius: 3px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);"></div>
+                <div style="background: rgba(0,0,0,0.05); height: 6px; border-radius: 3px; overflow: hidden;">
+                    <div style="width: {{ $stats['total_posts'] > 0 ? ($stats['pending_posts'] / $stats['total_posts']) * 100 : 0 }}%; height: 100%; background: #f59e0b; border-radius: 3px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);"></div>
                 </div>
             </div>
 
             <!-- Failed Posts (Creative) -->
-            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.15); border-radius: 24px; padding: 1.75rem; backdrop-filter: blur(10px); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #ef4444, #b91c1c); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);">
+                    <div style="width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg, #ef4444, #b91c1c); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(239, 68, 68, 0.2);">
                         <i data-lucide="x-circle" style="color: #fff; width: 24px; height: 24px;"></i>
                     </div>
                     <div>
                         <div style="color: #ef4444; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Failed</div>
-                        <div style="color: #fff; font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['failed_posts']) }}</div>
+                        <div style="color: var(--text-main); font-size: 1.75rem; font-weight: 900; line-height: 1.2;">{{ number_format($stats['failed_posts']) }}</div>
                     </div>
                 </div>
                 <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; overflow: hidden;">
@@ -517,6 +517,7 @@
             lucide.createIcons();
 
             // Setup ApexCharts Theme & Data
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
             const textColor = getComputedStyle(document.body).getPropertyValue('--text-main').trim();
             const textMuted = getComputedStyle(document.body).getPropertyValue('--text-muted').trim();
             
@@ -572,9 +573,9 @@
                     strokeDashArray: 4,
                     yaxis: { lines: { show: true } }
                 },
-                theme: { mode: 'dark' },
+                theme: { mode: currentTheme },
                 tooltip: {
-                    theme: 'dark'
+                    theme: currentTheme
                 }
             };
             var activityChart = new ApexCharts(document.querySelector("#activityChart"), activityOptions);
@@ -619,11 +620,18 @@
                     labels: { colors: textColor, useSeriesColors: false },
                     markers: { width: 12, height: 12, radius: 12 }
                 },
-                theme: { mode: 'dark' },
-                tooltip: { theme: 'dark' }
+                theme: { mode: currentTheme },
+                tooltip: { theme: currentTheme }
             };
             var statusChart = new ApexCharts(document.querySelector("#statusChart"), statusOptions);
             statusChart.render();
+
+            // Listen for theme changes to dynamically update charts
+            window.addEventListener('themeChanged', (e) => {
+                const newTheme = e.detail.theme;
+                activityChart.updateOptions({ theme: { mode: newTheme }, tooltip: { theme: newTheme } });
+                statusChart.updateOptions({ theme: { mode: newTheme }, tooltip: { theme: newTheme } });
+            });
         });
     </script>
 @endsection

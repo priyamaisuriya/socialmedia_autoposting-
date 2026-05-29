@@ -90,20 +90,56 @@
                             </td>
 
                             <!-- Likes -->
-                            <td style="text-align: center; font-weight: 800; font-size: 0.9rem; color: #f43f5e;">
+                            <td style="text-align: center;">
                                 @if($post->hide_likes)
                                     <span style="font-size: 0.7rem; color: var(--text-muted); background: var(--bg-main); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--glass-border);"><i data-lucide="eye-off" style="width:10px;height:10px;"></i> Hidden</span>
                                 @else
-                                    {{ number_format(max($post->dynamic_likes ?? 0, $post->likes_count ?? 0)) }}
+                                    <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+                                        @if($post->post_to_facebook)
+                                        <div style="display: flex; align-items: center; gap: 6px;" title="Facebook Likes">
+                                            <i data-lucide="facebook" style="width:14px;height:14px;color:#1877f2;fill:#1877f2;border:none;"></i>
+                                            <span style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">{{ number_format($post->dynamic_fb_likes ?? 0) }}</span>
+                                            <span style="font-size:0.6rem; font-weight: 800; color:#1877f2; background:rgba(24, 119, 242, 0.1); padding:2px 5px; border-radius:6px; letter-spacing:0.05em;">FB</span>
+                                        </div>
+                                        @endif
+                                        @if($post->post_to_instagram)
+                                        <div style="display: flex; align-items: center; gap: 6px;" title="Instagram Likes">
+                                            <i data-lucide="instagram" style="width:14px;height:14px;color:#e1306c;"></i>
+                                            <span style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">{{ number_format($post->dynamic_ig_likes ?? 0) }}</span>
+                                            <span style="font-size:0.6rem; font-weight: 800; color:#e1306c; background:rgba(225, 48, 108, 0.1); padding:2px 5px; border-radius:6px; letter-spacing:0.05em;">IG</span>
+                                        </div>
+                                        @endif
+                                        @if(!$post->post_to_facebook && !$post->post_to_instagram)
+                                            <span style="font-weight: 800; font-size: 0.85rem; color: var(--text-muted);">0</span>
+                                        @endif
+                                    </div>
                                 @endif
                             </td>
 
                             <!-- Comments -->
-                            <td style="text-align: center; font-weight: 800; font-size: 0.9rem; color: var(--accent);">
+                            <td style="text-align: center;">
                                 @if($post->hide_comments)
                                     <span style="font-size: 0.7rem; color: var(--text-muted); background: var(--bg-main); padding: 2px 6px; border-radius: 6px; border: 1px solid var(--glass-border);"><i data-lucide="eye-off" style="width:10px;height:10px;"></i> Hidden</span>
                                 @else
-                                    {{ number_format(max($post->dynamic_comments ?? 0, $post->comments->count())) }}
+                                    <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+                                        @if($post->post_to_facebook)
+                                        <div style="display: flex; align-items: center; gap: 6px;" title="Facebook Comments">
+                                            <i data-lucide="facebook" style="width:14px;height:14px;color:#1877f2;fill:#1877f2;border:none;"></i>
+                                            <span style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">{{ number_format($post->dynamic_fb_comments ?? 0) }}</span>
+                                            <span style="font-size:0.6rem; font-weight: 800; color:#1877f2; background:rgba(24, 119, 242, 0.1); padding:2px 5px; border-radius:6px; letter-spacing:0.05em;">FB</span>
+                                        </div>
+                                        @endif
+                                        @if($post->post_to_instagram)
+                                        <div style="display: flex; align-items: center; gap: 6px;" title="Instagram Comments">
+                                            <i data-lucide="instagram" style="width:14px;height:14px;color:#e1306c;"></i>
+                                            <span style="font-weight: 800; font-size: 0.85rem; color: var(--text-main);">{{ number_format($post->dynamic_ig_comments ?? 0) }}</span>
+                                            <span style="font-size:0.6rem; font-weight: 800; color:#e1306c; background:rgba(225, 48, 108, 0.1); padding:2px 5px; border-radius:6px; letter-spacing:0.05em;">IG</span>
+                                        </div>
+                                        @endif
+                                        @if(!$post->post_to_facebook && !$post->post_to_instagram)
+                                            <span style="font-weight: 800; font-size: 0.85rem; color: var(--text-muted);">0</span>
+                                        @endif
+                                    </div>
                                 @endif
                             </td>
 
