@@ -39,7 +39,7 @@ class StoryController extends Controller
     {
         $request->validate([
             'facebook_page_id' => 'required|exists:facebook_pages,id',
-            'media' => 'required|file|mimes:jpg,jpeg,png,mp4|max:51200',
+            'media' => 'required|file|mimes:jpg,jpeg,png,mp4,webp,webm|max:51200',
         ]);
 
         $postToFacebook = $request->has('post_to_facebook');
@@ -58,7 +58,7 @@ class StoryController extends Controller
         if ($request->hasFile('media')) {
             $file = $request->file('media');
             $extension = $file->getClientOriginalExtension();
-            $type = in_array(strtolower($extension), ['mp4', 'mov', 'wmv', 'flv', 'avi']) ? 'video' : 'photo';
+            $type = in_array(strtolower($extension), ['mp4', 'mov', 'wmv', 'flv', 'avi', 'webm']) ? 'video' : 'photo';
             
             // Store file locally in public disk
             $filename = time() . '_' . uniqid() . '.' . $extension;

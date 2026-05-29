@@ -128,6 +128,23 @@ class FacebookApiService
     }
 
     /**
+     * Fetch engagement metrics for an Instagram post.
+     */
+    public function getInstagramPostEngagement($igMediaId, $pageAccessToken)
+    {
+        try {
+            $response = Http::timeout(30)->get("{$this->baseUrl}/{$igMediaId}", [
+                'fields' => 'like_count,comments_count',
+                'access_token' => $pageAccessToken
+            ]);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
      * Send a reply to a specific comment.
      */
     public function replyToComment($commentId, $message, $pageAccessToken)

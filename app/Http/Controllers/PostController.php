@@ -33,6 +33,12 @@ class PostController extends Controller
         $totalLikes = 0;
         $totalComments = 0;
         foreach ($posts as $post) {
+            $fbLikes = 0;
+            $fbComments = 0;
+            $igLikes = 0;
+            $igComments = 0;
+            $hasEngagement = false;
+
             if ($post->status === 'success' && $post->facebook_post_id && $post->facebookPage) {
                 try {
                     $engagement = $this->facebookApi->getPostEngagement(
@@ -40,28 +46,48 @@ class PostController extends Controller
                         $post->facebookPage->access_token
                     );
                     
-                    $likes = $engagement['reactions']['summary']['total_count'] ?? $engagement['likes']['summary']['total_count'] ?? 0;
-                    $comments = $engagement['comments']['summary']['total_count'] ?? $engagement['comments_count'] ?? 0;
-                    
-                    $post->update([
-                        'likes_count' => $likes,
-                        'comments_count' => $comments,
-                    ]);
+                    $fbLikes = $engagement['reactions']['summary']['total_count'] ?? $engagement['likes']['summary']['total_count'] ?? 0;
+                    $fbComments = $engagement['comments']['summary']['total_count'] ?? $engagement['comments_count'] ?? 0;
+                    $hasEngagement = true;
+                } catch (\Exception $e) {}
+            }
 
-                    $post->dynamic_likes = $likes;
-                    $post->dynamic_comments = $comments;
+            if ($post->instagram_status === 'success' && $post->instagram_post_id && $post->facebookPage) {
+                try {
+                    $igEngagement = $this->facebookApi->getInstagramPostEngagement(
+                        $post->instagram_post_id,
+                        $post->facebookPage->access_token
+                    );
                     
-                    $totalLikes += $likes;
-                    $totalComments += $comments;
-                } catch (\Exception $e) {
-                    $post->dynamic_likes = $post->likes_count;
-                    $post->dynamic_comments = $post->comments_count;
-                    $totalLikes += $post->likes_count;
-                    $totalComments += $post->comments_count;
-                }
+                    $igLikes = $igEngagement['like_count'] ?? 0;
+                    $igComments = $igEngagement['comments_count'] ?? 0;
+                    $hasEngagement = true;
+                } catch (\Exception $e) {}
+            }
+
+            if ($hasEngagement) {
+                $post->update([
+                    'likes_count' => $fbLikes + $igLikes,
+                    'comments_count' => $fbComments + $igComments,
+                    'fb_likes_count' => $fbLikes,
+                    'fb_comments_count' => $fbComments,
+                    'ig_likes_count' => $igLikes,
+                    'ig_comments_count' => $igComments,
+                ]);
+
+                $post->dynamic_fb_likes = $fbLikes;
+                $post->dynamic_fb_comments = $fbComments;
+                $post->dynamic_ig_likes = $igLikes;
+                $post->dynamic_ig_comments = $igComments;
+                $post->dynamic_likes = $fbLikes + $igLikes;
+                $post->dynamic_comments = $fbComments + $igComments;
             } else {
-                $post->dynamic_likes = 0;
-                $post->dynamic_comments = 0;
+                $post->dynamic_fb_likes = $post->fb_likes_count ?? 0;
+                $post->dynamic_fb_comments = $post->fb_comments_count ?? 0;
+                $post->dynamic_ig_likes = $post->ig_likes_count ?? 0;
+                $post->dynamic_ig_comments = $post->ig_comments_count ?? 0;
+                $post->dynamic_likes = $post->likes_count ?? 0;
+                $post->dynamic_comments = $post->comments_count ?? 0;
             }
         }
 
@@ -93,7 +119,7 @@ class PostController extends Controller
             'facebook_page_id' => 'required|exists:facebook_pages,id',
             'message' => 'nullable|string',
             'media' => 'nullable|array',
-            'media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200',
+            'media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webp,webm|max:51200',
             'scheduled_at' => 'nullable|date|after_or_equal:now',
         ]);
 
@@ -250,6 +276,12 @@ class PostController extends Controller
         if ($isScheduled) {
             $feedbacks[] = 'Scheduled for ' . \Carbon\Carbon::parse($request->scheduled_at)->format('Y-m-d H:i');
         } else {
+            $post->refresh();
+            $facebookSuccess = $post->status === 'success';
+            $instagramSuccess = $post->instagram_status === 'success';
+            $fbErrorMsg = 'Unknown Error';
+            $igErrorMsg = $post->instagram_error ?? 'Unknown Error';
+
             if ($postToFacebook) {
                 $feedbacks[] = $facebookSuccess ? 'Facebook: Success' : "Facebook Failed ({$fbErrorMsg})";
             }
@@ -274,6 +306,12 @@ class PostController extends Controller
             $query->whereNull('parent_id')->with('replies');
         }]);
         
+        $fbLikes = 0;
+        $fbComments = 0;
+        $igLikes = 0;
+        $igComments = 0;
+        $hasEngagement = false;
+
         if ($post->status === 'success' && $post->facebook_post_id && $post->facebookPage) {
             try {
                 $engagement = $this->facebookApi->getPostEngagement(
@@ -281,23 +319,48 @@ class PostController extends Controller
                     $post->facebookPage->access_token
                 );
                 
-                $likes = $engagement['reactions']['summary']['total_count'] ?? $engagement['likes']['summary']['total_count'] ?? 0;
-                $comments = $engagement['comments']['summary']['total_count'] ?? $engagement['comments_count'] ?? 0;
-                
-                $post->update([
-                    'likes_count' => $likes,
-                    'comments_count' => $comments,
-                ]);
+                $fbLikes = $engagement['reactions']['summary']['total_count'] ?? $engagement['likes']['summary']['total_count'] ?? 0;
+                $fbComments = $engagement['comments']['summary']['total_count'] ?? $engagement['comments_count'] ?? 0;
+                $hasEngagement = true;
+            } catch (\Exception $e) {}
+        }
 
-                $post->dynamic_likes = $likes;
-                $post->dynamic_comments = $comments;
-            } catch (\Exception $e) {
-                $post->dynamic_likes = $post->likes_count;
-                $post->dynamic_comments = $post->comments_count;
-            }
+        if ($post->instagram_status === 'success' && $post->instagram_post_id && $post->facebookPage) {
+            try {
+                $igEngagement = $this->facebookApi->getInstagramPostEngagement(
+                    $post->instagram_post_id,
+                    $post->facebookPage->access_token
+                );
+                
+                $igLikes = $igEngagement['like_count'] ?? 0;
+                $igComments = $igEngagement['comments_count'] ?? 0;
+                $hasEngagement = true;
+            } catch (\Exception $e) {}
+        }
+
+        if ($hasEngagement) {
+            $post->update([
+                'likes_count' => $fbLikes + $igLikes,
+                'comments_count' => $fbComments + $igComments,
+                'fb_likes_count' => $fbLikes,
+                'fb_comments_count' => $fbComments,
+                'ig_likes_count' => $igLikes,
+                'ig_comments_count' => $igComments,
+            ]);
+
+            $post->dynamic_fb_likes = $fbLikes;
+            $post->dynamic_fb_comments = $fbComments;
+            $post->dynamic_ig_likes = $igLikes;
+            $post->dynamic_ig_comments = $igComments;
+            $post->dynamic_likes = $fbLikes + $igLikes;
+            $post->dynamic_comments = $fbComments + $igComments;
         } else {
-            $post->dynamic_likes = 0;
-            $post->dynamic_comments = 0;
+            $post->dynamic_fb_likes = $post->fb_likes_count ?? 0;
+            $post->dynamic_fb_comments = $post->fb_comments_count ?? 0;
+            $post->dynamic_ig_likes = $post->ig_likes_count ?? 0;
+            $post->dynamic_ig_comments = $post->ig_comments_count ?? 0;
+            $post->dynamic_likes = $post->likes_count ?? 0;
+            $post->dynamic_comments = $post->comments_count ?? 0;
         }
 
         return view('posts.show', compact('post'));
